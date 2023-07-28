@@ -41,9 +41,25 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+	
+	'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
+    'corsheaders',
+    # 'djstripe',
+    'taggit',
+
+    'storages',
+    'health_check',
+    'health_check.db',
+    'health_check.cache',
+    'health_check.storage',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'core.middleware.healthcheck.HealthCheckMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -59,20 +75,26 @@ ROOT_URLCONF = 'mysite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [Path.joinpath(BASE_DIR, 'core/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'core.context_processors.base.defaults',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+				
+				# `allauth` needs this from django
+                'django.template.context_processors.request',
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
+AUTH_USER_MODEL = 'core.User'
+AUTH_PROFILE_MODULE = "core.UserProfile"
 
 
 # Database
@@ -96,6 +118,12 @@ DATABASES = {
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+	{
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 9
+        }
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
@@ -126,9 +154,186 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+# STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+STATIC_ROOT = Path.joinpath(BASE_DIR, 'core/static')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = Path.joinpath(BASE_DIR, 'core/media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+        "main_formatter": {
+            "format": "%(levelname)s:%(name)s: %(message)s "
+                      "(%(asctime)s; %(filename)s:%(lineno)d)",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'django.server': {
+            '()': 'django.utils.log.ServerFormatter',
+            'format': '[{server_time}] {message}',
+            'style': '{',
+        }
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            # 'class': 'logging.FileHandler',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': "logs/dev.log",
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 7,
+            'formatter': 'main_formatter',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            "formatter": "main_formatter",
+        },
+        'django.server': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'django.server',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'mail_admins', 'file'],
+            'level': 'INFO',
+        },
+        "django.request": {
+            "handlers": ["mail_admins", "console"],
+            "level": "ERROR",
+            "propagate": True,
+        },
+        'django.server': {
+            'handlers': ['django.server', 'file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        "": {
+            "handlers": ["console", "file"],
+            "level": "DEBUG",
+        },
+    }
+}
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+EMAIL_BACKEND= config('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')  # During development only
+EMAIL_HOST = config("EMAIL_HOST", default="localhost")
+EMAIL_PORT = config("EMAIL_PORT", default=25, cast=int)
+EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=False, cast=bool)
+EMAIL_SUBJECT_PREFIX = config("EMAIL_SUBJECT_PREFIX", default="")
+DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default="tboyajayi10@yahoo.ca", cast=str)
+
+NOTIFS_RECIPIENT_LIST=config("NOTIFS_RECIPIENT_LIST", default="info@dancecreateconnect.ca, admin@dancecreateconnect.ca", cast=Csv(str))
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-secondary',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
+}
+
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+    # "ACL": "public-read"
+}
+
+GOOGLE_RECAPTCHA_SECRET_KEY = config("GOOGLE_RECAPTCHA_SECRET_KEY", default="")
+
+# django allauth configs
+ACCOUNT_AUTHENTICATION_METHOD="username_email"
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS=1
+ACCOUNT_EMAIL_REQUIRED=True
+ACCOUNT_EMAIL_VERIFICATION="mandatory"
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION=True
+ACCOUNT_LOGIN_ATTEMPTS_LIMIT=4
+ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE=True
+ACCOUNT_USERNAME_MIN_LENGTH=7
+ACCOUNT_EMAIL_SUBJECT_PREFIX='Dance.Create.Connect'
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL=PROFILE_SETUP_URL
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL=PROFILE_SETUP_URL
+ACCOUNT_DEFAULT_HTTP_PROTOCOL=config("ACCOUNT_DEFAULT_HTTP_PROTOCOL", default='http')
+ACCOUNT_FORMS={'signup': 'core.forms.DCCCustomSignupForm'}
+# ACCOUNT_SIGNUP_FORM_CLASS=''
+
+# STRIPE_LIVE_SECRET_KEY = os.environ.get("STRIPE_LIVE_SECRET_KEY", "<your secret key>")
+STRIPE_TEST_PUBLIC_KEY=config('STRIPE_TEST_PUBLIC_KEY')
+STRIPE_LIVE_SECRET_KEY=config('STRIPE_LIVE_SECRET_KEY')
+STRIPE_TEST_SECRET_KEY=config('STRIPE_TEST_SECRET_KEY')
+STRIPE_LIVE_MODE=config('STRIPE_LIVE_MODE', default=False, cast=bool)
+DJSTRIPE_WEBHOOK_SECRET=config('DJSTRIPE_WEBHOOK_SECRET')
+DJSTRIPE_FOREIGN_KEY_TO_FIELD=config('DJSTRIPE_FOREIGN_KEY_TO_FIELD')
+
+TAGGIT_CASE_INSENSITIVE=True
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+CORS_ALLOW_METHODS = ['GET', 'OPTIONS',]
+CORS_ALLOWED_ORIGINS = [
+    "https://django-server-production-54e5.up.railway.app",
+    "https://js.stripe.com"
+]
+CORS_ALLOW_ALL_ORIGINS=True
+
+CSRF_TRUSTED_ORIGINS=[
+    "https://*.django-server-production-54e5.up.railway.app",
+    "https://*.stripe.com",
+    "https://*.127.0.0.1"
+]
+
+CSRF_COOKIE_HTTPONLY = config('CSRF_COOKIE_HTTPONLY', default=False, cast=bool)
+CSRF_COOKIE_SECURE=config('CSRF_COOKIE_SECURE', default=False, cast=bool)
+SESSION_COOKIE_SECURE=config('SESSION_COOKIE_SECURE', default=True, cast=bool)
+SESSION_COOKIE_AGE = 30000
+SESSION_EXPIRE_AT_BROWSER_CLOSE=config('SESSION_EXPIRE_AT_BROWSER_CLOSE', default=True, cast=bool)
+SESSION_COOKIE_HTTPONLY=config('SESSION_COOKIE_HTTPONLY', default=True, cast=bool)
+
+SECURE_SSL_REDIRECT=config('SECURE_SSL_REDIRECT', default=False, cast=bool)
+SECURE_PROXY_SSL_HEADER=('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
