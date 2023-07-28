@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+
+<div class="">
+    <div class="row">
+        <div class="col-lg-7">
+            <div class="card">
+                <div class="card-body pt-2">
+                    <h5 class="card-title text-blue ">
+                        {{ topic.title }}
+                    </h5>
+                    <div class="d-flex justify-content-end my-1">
+                        <small class="text-muted">
+                            {{ topic.created_at|date:"D, M d, Y" }}
+                        </small>
+                    </div>
+                    <p class="mb-0">{{ topic.body }}</p>
+                    <div class="my-1">
+                        {% if topic.tags %}
+                            {% for tag in topic.tags.all %}
+                            <span class="badge bg-light text-dark mx-1">{{ tag.name }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <!-- Add like/dislike count -->
+                    <div class="row">
+                        <div class="col">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body pt-2">
+                    <h5 class="card-title text-blue ">{% translate "Comment" %}</h5>
+
+                    <!-- Add comment form -->
+                    <form id="forum_topic_comment_form" class="needs-validation"
+                        autocomplete="off" novalidate method="POST"
+                        enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <input name="forum_topic" type="text" 
+                                       class="form-control my-2" aria-hidden="true"
+                                       id="forum_topic_form_id" required
+                                       aria-label="{% translate 'Comment Forum' %}"
+                                       autocomplete="hidden" hidden
+                                       value="{{ topic.pk }}">
+                                <textarea name="body" class="form-control my-2"
+                                          id="forum_topic_comment_body" 
+                                          aria-label="{% translate 'Add Comment here' %}"
+                                          placeholder="{% translate 'Add comment' %}"
+                                          style="height: 60px"></textarea>
+                            </div>
+                            <div class="d-grid my-2">
+                                <button type="button" onclick="createForumTopic()"
+                                        class="btn btn-sm btn-blue">
+                                    {% translate "Submit" %}
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="my-2">user.user</p>
+                            <p>
+                                Nunc consequat interdum varius sit. 
+                                Laoreet non curabitur gravida arcu ac 
+                                tortor dignissim convallis aenean. Amet 
+                                porttitor eget dolor morbi non arcu risus quis.
+                                Lacus vel facilisis volutpat est. 
+                                Aliquet bibendum enim facilisis gravida neque convallis a. 
+                                Aliquet porttitor lacus luctus accumsan tortor posuere ac ut.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% for comment in topic.comments.all %}
+                <div class="card">
+                    <div class="card-body pt-2">
+                        <p>
+                            {{ comment.body }}
+                        </p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

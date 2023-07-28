@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="container page-content">
+    <div class="row">
+        <div class="col-12 align-items-center justify-content-center">
+            <h2 class="text-purple text-center mb-5">Error 500</h2>
+            {% if error_msg %}
+            <p> {{ error_msg }}
+            {% endif %}
+            {% if request.user.is_staff and stack_trace %}
+            <pre class="text-left">{{ stack_trace }}</pre>
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 d-flex justify-content-center">
+            <a class="btn btn-purple text-center" href="/" role="button">
+                {% translate "Go Back Home" %}
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="container page-content">
+    <div class="row">
+        <div class="col-12 align-items-center justify-content-center">
+            <h2 class="text-purple text-center mb-5">404</h2>
+            <h5 class="text-center">
+                {% translate "Oops, Sorry That Page Does Not Exist!" %}
+            </h5>
+            <p class="text-muted text-center mb-5">
+                {% translate "Either something went wrong, or we can't find that page." %}
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 d-flex justify-content-center">
+            <a class="btn btn-purple text-center" href="/" role="button">
+                {% translate "Go Back Home" %}</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,1407 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <div class="col-xl-4">
+        {% include "components/profile/profile_card.html" with profile=profile %}
+    </div>
+
+    <div class="col-xl-8">
+        <div class="card">
+            <div class="card-body pt-3">
+                <!-- Bordered Tabs -->
+                <ul class="nav nav-tabs nav-tabs-bordered">
+                    <li class="nav-item">
+                        <button class="nav-link active" data-bs-toggle="tab" 
+                                data-bs-target="#profile_overview">
+                            {% translate "Overview" %}
+                        </button>
+                    </li>
+
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" 
+                                data-bs-target="#profile_edit">
+                            {% translate "Edit Profile" %}
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" 
+                                data-bs-target="#studio_lists_tab">
+                            {% translate "My Studios" %}
+                        </button>
+                    </li>
+
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab"
+                                data-bs-target="#studio_calendar"
+                                id="studio_calendar_tab_btn">
+                            {% translate "Calendar" %}
+                        </button>
+                    </li>
+
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab"
+                                data-bs-target="#profile_change_password">
+                            {% translate "Change Password" %}
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content pt-2">
+                    <div class="tab-pane fade show active profile-overview" id="profile_overview">
+                        
+                        <div class="row mb-2">
+                            <div class="col d-md-flex justify-content-end">
+                                <a class="btn btn-primary btn-sm my-1 me-md-1"
+                                   href="{% url 'account_email' %}" role="button">
+                                   {% translate "Manage your emails" %}
+                                </a>
+                                <a class="btn btn-success btn-sm my-1 ms-md-1"
+                                   href="{% url 'account_email' %}" role="button">
+                                    {% translate "Manage Subscription" %}
+                                </a>
+                            </div>
+                        </div>
+
+                        <h5 class="card-title">{% translate "About" %}</h5>
+                        <p class="small fst-italic">
+                            {{ profile.bio|default_if_none:"" }}
+                        </p>
+
+                        <h5 class="card-title">{% translate "Profile Details" %}</h5>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 label">
+                                {% translate "Username" %}
+                            </div>
+                            <div class="col-lg-9 col-md-8">
+                                {{ user.username }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 label">
+                                {% translate "Administrator Name" %}
+                            </div>
+                            <div class="col-lg-9 col-md-8">
+                                {{ profile.full_name|default_if_none:user.get_full_name }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 label">
+                                {% translate "Email" %}
+                            </div>
+                            <div class="col-lg-9 col-md-8">
+                                {{ user_email }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 label">
+                                {% translate "Phone" %}
+                            </div>
+                            <div class="col-lg-9 col-md-8">
+                                {{ profile.phone|default_if_none:'' }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 label">{% translate "Studio Name" %}</div>
+                            <div class="col-lg-9 col-md-8">
+                                {{ profile.display_name|default_if_none:'' }}
+                            </div>
+                        </div>
+
+                        <!-- Add genres/interests here -->
+                        <div class="row my-2">
+                            <div class="col">
+                                <small class="fw-bold d-block">{% translate "My Genres" %}</small>
+                                <div class="my-2">
+                                {% if profile.genres.count %}
+                                    {% for genre in profile.genres.all %}
+                                    <span class="badge bg-info text-dark mx-1">{{ genre.name }}</span>
+                                    {% endfor %}
+                                {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="tab-pane fade profile-edit pt-3" id="profile_edit">
+                        {% if profile_form.errors %}
+                        <div id="form_errors" class="col-12 text-danger py-2">
+                            <div class="inner">
+                                <p>
+                                    {% blocktrans %}
+                                    There were some errors in the information you entered. Please try again.
+                                    {% endblocktrans %}
+                                </p>
+                                <ul>
+                                    {% for field in profile_form %}
+                                        {% if field.errors %}
+                                        <li>{{ field.label }}: {{ field.errors|striptags }}</li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Profile Edit Form -->
+                        <form class="needs-validation" method="POST" autocomplete="off"
+                                id="profile_form" novalidate enctype="multipart/form-data"
+                                action="{% url 'core:my_studio' %}">
+                            {% csrf_token %}
+                            <div class="row mb-3">
+                                <label for="profile_photo" class="col-md-4 col-lg-3 col-form-label">
+                                    {% translate "Profile Image" %}
+                                </label>
+                                <div class="col-md-8 col-lg-9">
+                                    {% if profile.profile_photo %}
+                                    <img src="{{ profile.profile_photo.url }}"
+                                         alt="{% translate 'Your Profile Photo' %}">
+                                    {% endif %}
+                                    <div class="pt-2">
+                                        <div class="col">
+                                            <input class="form-control" name="profile_photo" 
+                                                   type="file" id="profile_photo">
+                                        </div>
+                                        {% if profile.profile_photo %}
+                                        <div class="col">
+                                            <a href="#" class="btn btn-danger btn-sm" 
+                                                title="{% translate 'Remove profile image' %}">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <input name="user_id" type="hidden" value="{{ user.id }}"
+                                        aria-label="{% trans "Profile user" %}">
+                                <label for="profile_user_full_name"
+                                        class="col-md-4 col-lg-3 col-form-label">
+                                    {% translate "Studio Administrator Full Name" %}
+                                </label>
+                                <div class="col-md-8 col-lg-9">
+                                    <input name="full_name" type="text" class="form-control"
+                                           id="profile_user_full_name" required
+                                           value="{{ profile.full_name|default_if_none:user.get_full_name }}">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="profile_phone" class="col-md-4 col-lg-3 col-form-label">
+                                    {% translate "Phone" %}
+                                </label>
+                                <div class="col-md-8 col-lg-9">
+                                    <input name="phone" type="text" class="form-control" 
+                                           id="profile_phone" required
+                                           value="{{ profile.phone|default_if_none:'' }}"
+                                           placeholder="(436) 486-3538 x29071">
+                                </div>
+                            </div>
+
+                            <div class="text-center my-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bx bx-save me-1"></i>
+                                    {% translate "Save Changes" %}
+                                </button>
+                            </div>
+                        </form><!-- End Profile Edit Form -->
+                    </div>
+
+                    <div class="tab-pane fade pt-3" id="studio_location">
+                        <div class="row mb-3">
+                            <div class="col">
+                                <h5 class="card-title">{% translate 'Studios' %}</h5>
+                                <p>
+                                    {% blocktrans %}
+                                    Click on a studio to edit, or click the button to add a new studio.
+                                    {% endblocktrans %}
+                                </p>
+                    
+                                <div class="d-flex justify-content-end mb-4">
+                                    <button type="button" id="profile_new_loc_btn"
+                                            class="btn btn-sm btn-outline-success">
+                                        <i class="bi bi-plus-circle-fill me-1"></i> 
+                                        {% translate "Add a new location" %}
+                                    </button>
+                                </div>
+
+                                <!-- List group with active and disabled items -->
+                                <ul class="list-group list-group-flush" 
+                                    id="studio_location_items_wrapper">
+                                    {% for studioloc in studio_locs %}
+                                    <a class="list-group-item list-group-item-action studio-location-item"
+                                        data-pid="{{ studioloc.id }}" id="location-item-{{ studioloc.id }}">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div>{{ studioloc.location.display_str|linebreaks }}</div>
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <button type="button" data-pk="{{ studioloc.id }}" 
+                                                        title="{% trans 'Delete location' %}"
+                                                        onclick="editStudioLocation(this)"
+                                                        class="btn btn-sm btn-warning edit-studio-location me-1">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <button type="button" data-pk="{{ studioloc.id }}" 
+                                                        title="{% trans 'Delete studio location' %}"
+                                                        onclick="deleteLocation(this)"
+                                                        class="btn btn-sm btn-danger delete-studio-location me-1">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    {% endfor %}
+                                </ul><!-- End Clean list group -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade pt-3" id="studio_lists_tab">
+                        <div class="row mb-3">
+                            <div class="col">
+                                <h5 class="card-title">{% translate 'Studios' %}</h5>
+                                <p>
+                                    {% blocktrans %}
+                                    Click on a studio to edit, or click the button to add a new studio.
+                                    {% endblocktrans %}
+                                </p>
+                    
+                                <div class="d-flex justify-content-end mb-4">
+                                    <button type="button" id="profile_new_studio_btn"
+                                            class="btn btn-sm btn-outline-success">
+                                        <i class="bi bi-plus-circle-fill me-1"></i> 
+                                        {% translate "Add a studio" %}
+                                    </button>
+                                </div>
+
+                                <ul class="list-group list-group-flush" 
+                                    id="studios_list_wrapper">
+                                    {% for obj in studios %}
+                                    <a class="list-group-item list-group-item-action studio-obj"
+                                        data-pid="{{ obj.id }}" id="studio-obj-{{ obj.id }}">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="fw-bold mb-0">{{ obj.name }}<p>
+                                                <p class="mb-1">{{ obj.bio }}<p>
+                                                <span class="mb-0">{{ obj.display_loc_str|linebreaks }}</span>
+                                            </div>
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <button type="button" data-pk="{{ obj.id }}" 
+                                                        title="{% trans 'Edit Studio' %}"
+                                                        onclick="editStudioObj(this)"
+                                                        class="btn btn-sm btn-warning edit-studio-obj me-1">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <button type="button" data-pk="{{ obj.id }}" 
+                                                        title="{% trans 'Delete studio' %}"
+                                                        onclick="deleteStudioObj(this)"
+                                                        class="btn btn-sm btn-danger delete-studio-obj me-1">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade pt-3" id="studio_calendar">
+                        <div class="d-flex justify-content-start mb-4">
+                            <button type="button" id="profile_new_sched_item_btn"
+                                    class="btn btn-sm btn-outline-success">
+                                <i class="bi bi-plus-circle-fill me-1"></i> 
+                                {% translate "Add a new schedule item" %}
+                            </button>
+                        </div>
+
+                        <div id="my_studio_calendar_wrapper">
+                            <div id="my_studio_calendar">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade pt-3" id="profile_change_password">
+                        <!-- Change Password Form core:user_pwd_change -->
+                        <form class="needs-validation" method="POST" novalidate
+                                id="pwd_update_form" autocomplete="off"
+                                action="{% url 'account_change_password' %}">
+                            {% csrf_token %}
+                            <input hidden value="{{ user.username }}"
+                                   autocomplete="{{ user.username }}" id="username">
+                            <div class="row mb-3">
+                                <label for="id_old_password" class="col-md-4 col-lg-3 col-form-label">
+                                    {% translate "Current Password" %}
+                                </label>
+                                <div class="col-md-8 col-lg-9">
+                                    <input type="password" name="old_password" 
+                                            autofocus="" class="form-control" required
+                                            autocomplete="current-password" id="id_old_password">
+                                </div>
+                            </div>
+
+                            <div class="row mb-1">
+                                <label for="id_new_password1" class="col-md-4 col-lg-3 col-form-label">
+                                    {% translate "New Password" %}
+                                </label>
+                                <div class="col-md-8 col-lg-9">
+                                    <input type="password" name="new_password1" required 
+                                            autocomplete="new-password" class="form-control"
+                                            id="id_new_password1">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <small class="text-muted">
+                                        {{ password_change_form.new_password1.help_text }}
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="id_new_password2" class="col-md-4 col-lg-3 col-form-label">
+                                    {% translate "Re-enter New Password" %}
+                                </label>
+                                <div class="col-md-8 col-lg-9">
+                                    <input type="password" name="new_password2"
+                                            autocomplete="new-password" required
+                                            class="form-control" id="id_new_password2">
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary">
+                                    {% translate "Change Password" %}
+                                </button>
+                            </div>
+                        </form>
+
+                    </div>
+
+                </div><!-- End Bordered Tabs -->
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade show" id="studio_location_modal" tabindex="-1" 
+     aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% translate "Studio Location" %}
+                </h5>
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+            </div>
+            <div class="modal-body">
+                <form autocomplete="off" id="my_studio_location_form" class="needs-validation"
+                      enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    <input name="pk" id="studio_loc_pk" type="hidden" value="-1">
+                    <input name="loc_pk" id="studio_loc_loc_pk" type="hidden" value="-1">
+
+                    <div class="col mt-1">
+                        <div class="form-group row mb-3">
+                            <label for="studio_loc_genre" class="col-form-label">
+                                {% translate "Genres at this location" %}
+                            </label>
+                            <select class="" id="studio_loc_genre" multiple name="genres"
+                                    data-placeholder="{% translate 'Select genres at this location' %}">
+                                {% for genre in genres %}
+                                    <option value="{{ genre.id }}">
+                                        {{ genre.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group row mb-2">
+                            <div class="col">
+                                <label for="studio_loc_descr" class="col-form-label">
+                                    {% translate "Describe studio location" %}
+                                </label>
+                                <textarea name="description" id="studio_loc_descr"
+                                          class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-2">
+                            <div class="col">
+                                <label for="studio_loc_address" class="col-form-label">
+                                    {% translate "Studio address" %}
+                                </label>
+                                <input type="text" name="address" required
+                                       class="form-control" id="studio_loc_address">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-2">
+                            <div class="col">
+                                <label for="studio_loc_state" class="col-form-label">
+                                    {% translate "State" %}
+                                </label>
+                                <input type="text" name="state" required
+                                       class="form-control" id="studio_loc_state">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-2">
+                            <div class="col">
+                                <label for="studio_loc_postal_code" class="col-form-label">
+                                    {% translate "Studio postal code" %}
+                                </label>
+                                <input type="text" name="postal_code" required
+                                        class="form-control" id="studio_loc_postal_code">
+                            </div>
+                        
+                            <div class="col">
+                                <label for="studio_loc_country" class="col-form-label">
+                                    {% translate "Country" %}
+                                </label>
+                                <input type="text" name="country" required
+                                        class="form-control" id="studio_loc_country">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-2">
+                            <div class="col">
+                                <label for="studio_loc_timezone" class="col-form-label">
+                                    {% translate "Timezone" %}
+                                </label>
+                                <select class="form-control" id="studio_loc_timezone" name="timezone">
+                                    {% for tz in timezones %}
+                                        <option value="{{ tz.0 }}">{{ tz.1 }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" class="btn btn-success" 
+                        onclick="saveLocationItem()">
+                    {% trans 'Save' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade show" id="studio_details_modal" tabindex="-1" 
+     aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% translate "Studio" %}
+                </h5>
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="modal" 
+                        aria-label="{% trans 'Close' %}"></button>
+            </div>
+            <div class="modal-body">
+                <form autocomplete="off" id="my_studio_details_form"
+                      enctype="multipart/form-data" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    <input name="pk" id="studio_pk" type="hidden" value="-1">
+                    <input name="profile" id="studio_profile" type="hidden"
+                           value="{{ profile.id }}">
+
+                    <div class="col mt-1">
+                        <div class="form-group row mb-2">
+                            <div class="col">
+                                <label for="studio_name" class="col-form-label">
+                                    {% translate "Studio Name" %}
+                                </label>
+                                <input type="text" name="name" required
+                                       class="form-control" id="studio_name">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-2">
+                            <div class="col-12 col-lg-6">
+                                <label for="studio_email" class="col-form-label">
+                                    {% translate "Email" %}
+                                </label>
+                                <input type="email" name="email" required
+                                       class="form-control" id="studio_email">
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <label for="studio_phone" class="col-form-label">
+                                    {% translate "Phone Number" %}
+                                </label>
+                                <input type="text" name="phone" required
+                                       class="form-control" maxlength="16"
+                                       id="studio_phone">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-2">
+                            <div class="col">
+                                <label for="studio_descr" class="col-form-label">
+                                    {% translate "Describe Studio" %}
+                                </label>
+                                <textarea name="description" id="studio_descr"
+                                          class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <label for="studio_genres" class="col-form-label">
+                                {% translate "Genres at this studio" %}
+                            </label>
+                            <select class="" id="studio_genres" multiple name="genres"
+                                    data-placeholder="{% translate 'Select genres at this studio' %}">
+                                {% for genre in genres %}
+                                    <option value="{{ genre.id }}">
+                                        {{ genre.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group row mb-2">
+                            <div class="col">
+                                <label for="studio_address" class="col-form-label">
+                                    {% translate "Studio address" %}
+                                </label>
+                                <input type="text" name="address" required
+                                       class="form-control" id="studio_address">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-2">
+                            <div class="col">
+                                <label for="studio_city" class="col-form-label">
+                                    {% translate "City" %}
+                                </label>
+                                <input type="text" name="city" required
+                                       class="form-control" id="studio_city">
+                            </div>
+                            <div class="col">
+                                <label for="studio_province" class="col-form-label">
+                                    {% translate "State" %}
+                                </label>
+                                <input type="text" name="state" required
+                                       class="form-control" id="studio_province">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-2">
+                            <div class="col">
+                                <label for="studio_postal_code" class="col-form-label">
+                                    {% translate "Postal Code" %}
+                                </label>
+                                <input type="text" name="postal_code" required
+                                        class="form-control" id="studio_postal_code">
+                            </div>
+                        
+                            <div class="col">
+                                <label for="studio_country" class="col-form-label">
+                                    {% translate "Country" %}
+                                </label>
+                                <input type="text" name="country" required
+                                        class="form-control" id="studio_country">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-2">
+                            <div class="col">
+                                <label for="studio_instagram" class="col-form-label">
+                                    {% translate "Instagram" %}
+                                </label>
+                                <input type="text" name="instagram"
+                                       class="form-control" id="studio_instagram">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-2">
+                            <div class="col">
+                                <label for="studio_facebook" class="col-form-label">
+                                    {% translate "Facebook" %}
+                                </label>
+                                <input type="text" name="facebook"
+                                       class="form-control" id="studio_facebook">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-2">
+                            <div class="col">
+                                <label for="studio_youtube" class="col-form-label">
+                                    {% translate "Youtube" %}
+                                </label>
+                                <input type="text" name="youtube"
+                                       class="form-control" id="studio_youtube">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-2">
+                            <div class="col">
+                                <label for="studio_tiktok" class="col-form-label">
+                                    {% translate "Tik Tok" %}
+                                </label>
+                                <input type="text" name="tiktok"
+                                       class="form-control" id="studio_tiktok">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-2">
+                            <div class="col">
+                                <label for="studio_files" class="col-form-label">
+                                    {% translate "Attachments" %}
+                                </label>
+                                <input type="file" name="files" multiple
+                                       class="form-control" id="studio_files">
+                                <small class="text-muted">
+                                    {% translate "Attach studio photos or videos!" %}
+                                </small>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <div class="col">
+                                <label for="studio_timezone" class="col-form-label">
+                                    {% translate "Timezone" %}
+                                </label>
+                                <select class="form-control" id="studio_timezone" name="timezone">
+                                    {% for tz in timezones %}
+                                        <option value="{{ tz.0 }}">{{ tz.1 }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    {% trans 'Close' %}
+                </button>
+                <button type="button" class="btn btn-success" 
+                        onclick="saveStudioObj()">
+                    <i class="bx bx-save me-1"></i>
+                    {% trans 'Save' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade show" id="studio_schedule_modal" tabindex="-1" 
+     aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% translate "Schedule" %}
+                </h5>
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="modal" 
+                        aria-label="{% trans 'Close' %}"></button>
+            </div>
+            <div class="modal-body">
+                <form autocomplete="off" id="my_studio_sched_form" class="needs-validation"
+                      enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    <input name="pk" id="studio_sched_pk" type="hidden" value="-1">
+
+                    <div class="col mt-1">
+                        <div class="form-group row mb-2">
+                            <div class="col-12">
+                                <label for="studio_sched_studio" class="col-form-label">
+                                    {% translate "Studio" %}
+                                </label>
+                                <select class="form-control" id="studio_sched_studio" name="studio">
+                                    {% for st in studios %}
+                                    <option value="{{ st.id }}">{{ st.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-2">
+                            <div class="col">
+                                <label for="studio_sched_title" class="col-form-label">
+                                    {% translate "Label" %}
+                                </label>
+                                <input type="text" name="title" required
+                                       class="form-control" id="studio_sched_title">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-2">
+                            <div class="col">
+                                <label for="studio_sched_descr" class="col-form-label">
+                                    {% translate "Description" %}
+                                </label>
+                                <textarea name="description" id="studio_sched_descr"
+                                          class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-2">
+                            <div class="col">
+                                <label for="studio_sched_image" class="col-form-label">
+                                    {% translate "Image" %}
+                                </label>
+                                <input type="file" name="image" required
+                                       class="form-control" id="studio_sched_image">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-2">
+                            <div class="col-12 col-lg-6">
+                                <label for="studio_sched_start" class="col-form-label">
+                                    {% translate "Starts" %}
+                                </label>
+                                <input type="datetime-local" name="start_dt" required
+                                       class="form-control" id="studio_sched_start"
+                                       value="{% now "Y-m-d" %}T09:00"
+                                       min="2020-01-07T00:00">
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <label for="studio_sched_end" class="col-form-label">
+                                    {% translate "Ends" %}
+                                </label>
+                                <input type="datetime-local" name="end_dt" required
+                                       class="form-control" id="studio_sched_end"
+                                       value="{% now "Y-m-d" %}T11:00"
+                                       min="2020-01-07T00:00">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-2">
+                            <div class="col-12 col-lg-6">
+                                <label for="studio_sched_type" class="col-form-label">
+                                    {% translate "Schedule Type" %}
+                                </label>
+                                <select class="form-control" id="studio_sched_type" name="sched_type">
+                                    <option value="event">{% translate "Event" %}</option>
+                                    <option value="open">{% translate "Available Space" %}</option>
+                                    <option value="class">{% translate "Dance Class" %}</option>
+                                    <option value="unavail">{% translate "Space Unavailable" %}</option>
+                                    <option value="closed">{% translate "Studio Closed" %}</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-lg-6 d-none" id="studio_sched_class_level_wrapper">
+                                <label for="studio_sched_class_level" class="col-form-label">
+                                    {% translate "Class Level" %}
+                                </label>
+                                <select class="form-control" id="studio_sched_class_level" name="class_level">
+                                    <option value="any">{% translate "Any" %}</option>
+                                    <option value="beginner">{% translate "Beginner" %}</option>
+                                    <option value="intermediate">{% translate "Intermediate" %}</option>
+                                    <option value="advanced">{% translate "Advanced" %}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-2">
+                            <div class="col-12 col-lg-6">
+                                <label for="studio_sched_freq" class="col-form-label">
+                                    {% translate "Frequency" %}
+                                </label>
+                                <select class="form-control" id="studio_sched_freq" name="freq">
+                                    <option value="once">{% translate "Once" %}</option>
+                                    <option value="daily">{% translate "Daily" %}</option>
+                                    <option value="weekly">{% translate "Weekly" %}</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-lg-6 d-none" id="studio_sched_freq_end_wrapper">
+                                <label for="studio_sched_freq_end" class="col-form-label">
+                                    {% translate "Date to stop recurrence" %}
+                                </label>
+                                <input type="date" name="freq_end"
+                                       class="form-control" id="studio_sched_freq_end"
+                                       value="{% now "Y-m-d" %}">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-2">
+                            <div class="col-12 col-lg-6">
+                                <label for="studio_sched_price" class="col-form-label">
+                                    {% translate "Price (If any)" %}
+                                </label>
+                                <input type="number" name="price"
+                                       class="form-control" id="studio_sched_price"
+                                       value="">
+                            </div>
+                            <div class="col-12 col-lg-6" id="studio_sched_price_type_wrapper">
+                                <label for="studio_sched_price_type" class="col-form-label">
+                                    {% translate "Price Type" %}
+                                </label>
+                                <select class="form-control" id="studio_sched_price_type" name="price_type">
+                                    <option value="hourly">{% translate "Hourly" %}</option>
+                                    <option value="daily">{% translate "Daily" %}</option>
+                                    <option value="total">{% translate "For the full Event" %}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" class="btn btn-success" 
+                        onclick="saveSchedItem()">
+                    {% trans 'Save' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block js_script %}
+
+<script>
+    let studioCalendar;
+    $(document).ready(function() {
+        $('#profile_genres, #studio_loc_genre, #studio_genres').selectize({
+            plugins: ["remove_button", "auto_position"],
+            maxItems: null,
+            valueField: 'id',
+            labelField: 'name',
+            searchField: 'name',
+            delimiter: ',',
+            create: function (input, callback) {
+                let term = $.trim(input);
+
+                if (!term.length || term.length < 3) return callback();
+
+                let genreId = -1,
+                    genreName = "",
+                    validGenre = false;
+
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'core:active_genres' %}",
+                    data: {
+                        'name': term,
+                        'slug': term.trim().replace(' ', '-'),
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function(data) {
+                        if (data.isValid) {
+                            callback({ value: data.id, text: input });
+                        }
+                    },
+                    error: function() {
+                        callback();
+                    },
+                });
+            }
+        });
+
+        $('#studio_sched_locs').selectize({
+            plugins: ["remove_button", "auto_position"],
+            maxItems: null,
+            valueField: 'id',
+            delimiter: ','
+        });
+
+        // let profileGenreSelectize = $('#profile_genres')[0].selectize;
+        // profileGenreSelectize.setValue("{{ my_genres }}");
+        // console.log("{{ my_genres }}")
+
+        $('#my_studio_location_form, #my_studio_sched_form').submit(function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+        });
+
+        $('#profile_new_loc_btn').click(function() {
+            clearForm("my_studio_location_form");
+            $('#studio_location_modal').modal("show");
+        });
+
+        $('#profile_new_studio_btn').click(function() {
+            clearForm("my_studio_details_form");
+            $('#studio_details_modal').modal("show");
+            let studioGenresElem = $('#studio_genres')[0].selectize;
+            studioGenresElem.setValue([]);
+        });
+
+        $('#profile_new_sched_item_btn').click(function() {
+            clearForm("my_studio_sched_form");
+            $('#studio_schedule_modal').modal("show");
+        });
+
+        $('#studio_schedule_modal').on('hidden.bs.modal', function () {
+            clearForm("my_studio_sched_form");
+        });
+
+        $('#studio_calendar_tab_btn').on('click', function (event) {
+            let calendarEl = document.getElementById('my_studio_calendar'),
+                initViewType = 'dayGridMonth';
+
+            if (isMobile())
+                initViewType = "dayGridWeek";
+
+            studioCalendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: initViewType,
+                // editable: true,
+                eventSources: [
+                    {
+                        url: "{% url 'core:list_studio_events' %}" + "?studio={{ studio.id }}",
+                        type: 'GET',
+                        success: function (data) {
+                            //console.log(data.events);
+                            return data.events;
+                        },
+                        error: function() {
+                            alert('there was an error while fetching events!');
+                        },
+                        // color: 'yellow',   // a non-ajax option
+                        // textColor: 'black' // a non-ajax option
+                    }
+                ],
+                /*events: {
+                    url: "{% url 'core:list_studio_events' %}" + "?studio={{ studio.id }}",
+                    type: 'GET',
+                    success: function (data) {
+                        console.log(data.events);
+                        return data.events;
+                    },
+                    error: function() {
+                        alert('there was an error while fetching events!');
+                    },
+                    color: 'yellow',   // a non-ajax option
+                    textColor: 'black' // a non-ajax option
+                },*/
+                windowResize: function(arg) {
+                    // console.log(arg);
+                    if (isMobile())
+                        updateStudioCalendarView('listWeek');
+                    else
+                        updateStudioCalendarView('dayGridMonth');
+                },
+                eventDidMount: function(info) {
+                    let tooltip = new Tooltip(info.el, {
+                        title: info.event.extendedProps.description,
+                        placement: 'top',
+                        trigger: 'hover',
+                        container: 'body'
+                    });
+                },
+                eventClick: function(info) {
+                    studioEditScheduleItem(info.event.id);
+                }
+            });
+            studioCalendar.render();
+        });
+
+        $("#studio_sched_freq").change(function() {
+            let freq = $(this).val();
+
+            if (freq !== "once") {
+                $("#studio_sched_freq_end_wrapper").removeClass("d-none");
+            }
+            else {
+                $("#studio_sched_freq_end_wrapper").addClass("d-none");
+            }
+        });
+
+        $("#studio_sched_type").change(function() {
+            let schedType = $(this).val();
+
+            if (schedType === "class") {
+                $("#studio_sched_class_level_wrapper").removeClass("d-none");
+            }
+            else {
+                $("#studio_sched_class_level_wrapper").addClass("d-none");
+            }
+        });
+    });
+
+    function saveSchedItem() {
+        let schedForm = document.getElementById("my_studio_sched_form"),
+            $schedForm = $("#my_studio_sched_form"),
+            formIsValid = schedForm[0].checkValidity(),
+            schedId = $("#studio_sched_pk").val();
+            formData = new FormData(schedForm);
+
+            formData.append('image', $('#studio_sched_image')[0].files[0]);
+            /*
+            *   jQuery.each(jQuery('#file')[0].files, function(i, file) {
+                    formData.append('file-'+i, file);
+                });
+            */
+
+        if (!formIsValid || formIsValid === false) {
+            $schedForm.removeClass("needs-validation").addClass("was-validated");
+        } else {
+            $.ajax({
+                url: "{% url 'core:list_studio_events' %}" + schedId + "/",
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                type: 'POST',
+                success: function (data) {
+                    if (data.isValid) {
+                        $('#studio_schedule_modal').modal("hide");
+                        showAppAlert("success", data.msg);
+                    }
+                    else {
+                        showAppAlert("warning", data.msg, {"body": JSON.stringify(data.errors)});
+                        console.log(data.nonFieldErrors);
+                    }
+                },
+                fail: function (data) {
+                    $("form").html(
+                      '<div class="alert alert-danger">Could not reach server, please try again later.</div>'
+                    );
+                }
+            });
+        }
+    }
+
+    function studioEditScheduleItem(schedId) {
+        // ajax call and then open modal with details.
+        $.ajax({
+            url: "{% url 'core:list_studio_events' %}" + schedId + "/",
+            type: 'GET',
+            success: function (data) {
+                if (data.isValid) {
+                    let eventDetail = data.event;
+                    $('#studio_sched_pk').val(schedId);
+                    $('#studio_sched_title').val(eventDetail["title"]);
+                    $('#studio_sched_descr').val(eventDetail["description"]);
+                    $('#studio_sched_start').val(eventDetail["start"]);
+                    $('#studio_sched_end').val(eventDetail["end"]);
+                    $('#studio_sched_freq').val(eventDetail["frequency"]).trigger("change");
+                    $('#studio_sched_freq_end').val(eventDetail["frequency_end_dt"]);
+                    //$('#studio_sched_image').val(eventDetail["end"]);
+
+                    // display image
+                    // attach locations
+                    $('#studio_schedule_modal').modal("show");
+                }
+                else {
+                    showAppAlert("warning", data.msg, {"body": JSON.stringify(data.errors)});
+                    console.log(data);
+                }
+            }
+        });
+    }
+
+    function updateStudioCalendarView(viewType) {
+        studioCalendar.changeView(viewType);
+    }
+
+    function clearForm(formId) {
+        let $form = $('#'+formId);
+        $form.removeClass("was-validated")
+            .addClass("needs-validation");
+        $form[0].reset();
+
+        $(`#${formId} input[name=pk]`).val("-1");
+
+        $('#studio_loc_loc_pk').val("-1");
+        $('#studio_loc_genre').val("-1");
+    }
+
+    function showFAQDetails(item) {
+        let currently_active = item.classList.contains("active");
+        $('#admin_faqs_list li').removeClass("active");
+        if (!currently_active) {
+            item.classList.add("active");
+            loadFAQItem(item.dataset.pid);
+            $("#admin_del_faq_btn").removeAttr("disabled", "disabled");
+            $("#admin_faq_details_container").removeClass("d-none")
+        } else {
+            $("#admin_faq_details_container").addClass("d-none")
+        }
+    }
+
+    function loadMyStudios() {
+        let $container = $('#studios_list_wrapper');
+
+        $.ajax({
+            type: "GET",
+            url: "{% url 'core:my_studios_list' %}",
+            success: function(data) {
+                if (data.isValid) {
+                    $container.empty();
+
+                    data.studios.forEach(function(studio) {
+                        let delText = gettext('Delete Studio'),
+                            editText = gettext('Edit Studio');
+
+                        $container.append(
+                            `<a class="list-group-item list-group-item-action studio-obj"
+                                data-pid="${studio['id']}" id="studio-obj-${studio['id']}">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <p class="fw-bold mb-0">${studio['name']}<p>
+                                        <p class="mb-1">${studio['descrpition']}<p>
+                                        <span class="mb-0">${studio['location']}</span>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <button type="button" data-pk="${studio['id']}" 
+                                                title="${editText}"
+                                                onclick="editStudioObj(this)"
+                                                class="btn btn-sm btn-warning edit-studio-obj me-1">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button type="button" data-pk="${studio['id']}" 
+                                                title="${delText}"
+                                                onclick="deleteStudioObj(this)"
+                                                class="btn btn-sm btn-danger delete-studio-obj me-1">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </a>`
+                        );
+                    });
+                }
+            }
+        });
+    }
+
+    function editStudioObj(item) {
+        let studioPk = item.dataset.pk;
+        if (parseInt(studioPk) > 0) {
+            loadStudioObj(studioPk);
+        }
+        else {
+            showAppAlert("warning", gettext("Invalid studio selected"));
+        }
+    }
+
+    function deleteStudioObj(item) {
+        let studioPk = item.dataset.pid;
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'core:my_studio_details' %}",
+            data: {
+                'action': 'DELETE',
+                'pk': studioPk,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(data) {
+                if (data.isValid) {
+                    // remove the parent list elem of this
+                    $(`#studio-obj-${studioPk}`).remove();
+                    showAppAlert("success", data.msg);
+                }
+                else {
+                    showAppAlert("warning", data.msg);
+                }
+            }
+        });
+    }
+
+    function loadStudioObj(pk) {
+        return $.ajax({
+            type: "GET",
+            url: "{% url 'core:my_studio_details' %}",
+            data: {
+                'pk': pk,
+            },
+            success: function(data) {
+                if (data.isValid) {
+                    let studioData = data.studio,
+                        selectize = $('#studio_genres')[0].selectize;
+
+                    $('#studio_pk').val(studioData['id']);
+                    $('#studio_name').val(studioData['name']);
+                    $('#studio_email').val(studioData['email']);
+                    $('#studio_phone').val(studioData['phone']);
+                    $('#studio_profile_pk').val(studioData['profile']);
+                    $('#studio_descr').val(studioData['description']);
+                    $('#studio_address').val(studioData['address']);
+                    $('#studio_city').val(studioData['city']);
+                    $('#studio_province').val(studioData['province']);
+                    $('#studio_postal_code').val(studioData['postal_code']);
+                    $('#studio_country').val(studioData['country']);
+                    $('#studio_facebook').val(studioData['facebook']);
+                    $('#studio_instagram').val(studioData['instagram']);
+                    $('#studio_youtube').val(studioData['youtube']);
+                    $('#studio_tiktok').val(studioData['tiktok']);
+                    $('#studio_timezone').val(studioData['timezone']);
+                    selectize.setValue(studioData['genres']);
+
+                    $('#studio_details_modal').modal("show");
+                }
+            }
+        });
+    }
+
+    function saveStudioObj(item) {
+        let form = $("#my_studio_details_form"),
+            studioForm = document.getElementById("my_studio_details_form"),
+            formIsValid = form[0].checkValidity(),
+            formData = new FormData(studioForm);
+
+        /*
+        $.each($("#my_studio_details_form input[type=file]"), function(i, obj) {
+            $.each(obj.files, function(j, file) {
+                formData.append(obj.name, file); //i had to change "i" by "j"
+            });
+        });*/
+
+        var studioFiles = $("#my_studio_details_form #studio_files");
+        $.each(studioFiles, function (obj, v) {
+            var file = v.files[0];
+            myFormData.append("files", file);
+        });
+
+        if (!formIsValid || formIsValid === false) {
+            $("#my_studio_details_form")
+                .removeClass("needs-validation")
+                .addClass("was-validated");
+        } else {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'core:my_studio_details' %}",
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    if (data.isValid) {
+                        $("#my_studio_details_form").removeClass("was-validated")
+                            .addClass("needs-validation");
+                        $('#studio_details_modal').modal('hide');
+                        showAppAlert("success", data.msg);
+                        loadMyStudios();
+                    } else {
+                        showAppAlert("warning", data.msg, {"body": JSON.stringify(data.errors)});
+                    }
+                },
+                error: function(xhr){
+                    showAppAlert("danger", "Failed");
+                    console.log(xhr);
+                    console.log('Request Status: ' + xhr.status + ' Status Text: ' + xhr.statusText + ' ' + xhr.responseText);
+                }
+            });
+        }
+    }
+
+    function editStudioLocation(item) {
+        let studioLocPk = item.dataset.pk;
+        if (parseInt(studioLocPk) > 0) {
+            loadLocationItem(studioLocPk).done(function() {
+                $('#studio_location_modal').modal("show");
+            });
+        }
+        else {
+            showAppAlert("warning", "Invalid studio location selected");
+        }
+    }
+
+    function deleteLocation(item) {
+        let studioLocPk = item.dataset.pid;
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'core:active_genres' %}",
+            data: {
+                'action': 'DELETE',
+                'pk': studioLocPk,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(data) {
+                if (data.isValid) {
+                    // remove the parent list elem of this
+                    $(`#location-item-${studioLocPk}`).remove();
+                    // alert success
+                }
+                else {
+                    // Show error message in alert
+                }
+            }
+        });
+    }
+
+    function loadMyStudioLocations() {
+        let $container = $('#studio_location_items_wrapper');
+
+        $.ajax({
+            type: "GET",
+            url: "{% url 'core:my_studio_locs' %}",
+            data: {
+                'profile': {{ request.user.get_user_profile.id }},
+            },
+            success: function(data) {
+                if (data.isValid) {
+                    $container.empty();
+
+                    data.locations.forEach(function(loc) {
+                        let delText = gettext('Delete location');
+                        `<a class="list-group-item list-group-item-action studio-location-item"
+                            data-pid="${loc['id']}" id="location-item-${loc['id']}">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>${loc['locations']}</div>
+                                <button type="button" title="${delText}"
+                                        data-pk="${loc['id']}" onclick="deleteLocation(this)"
+                                        class="btn btn-sm btn-danger delete-studio-location">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </a>`
+                    });
+                }
+            }
+        });
+    }
+    
+    function loadLocationItem(pk) {
+        return $.ajax({
+            type: "GET",
+            url: "{% url 'core:my_studio_locs' %}",
+            data: {
+                'pk': pk,
+            },
+            success: function(data) {
+                if (data.isValid) {
+                    let locData = data.locations[0],
+                        selectize = $('#studio_loc_genre')[0].selectize;
+
+                    $('#studio_loc_name').val(locData['name']);
+                    $('#studio_loc_pk').val(locData['id']);
+                    $('#studio_loc_loc_pk').val(locData['loc_pk']);
+                    $('#studio_loc_descr').val(locData['description']);
+                    $('#studio_loc_address').val(locData['address']);
+                    $('#studio_loc_state').val(locData['state']);
+                    $('#studio_loc_postal_code').val(locData['postal_code']);
+                    $('#studio_loc_country').val(locData['country']);
+                    $('#studio_loc_timezone').val(locData['timezone']);
+                    selectize.setValue(locData['genres']);
+                }
+            }
+        });
+    }
+
+    function saveLocationItem() {
+        let form = $("#my_studio_location_form"),
+            formIsValid = form[0].checkValidity();
+
+        if (!formIsValid || formIsValid === false) {
+            $("#my_studio_location_form")
+                .removeClass("needs-validation").addClass("was-validated");
+        } else {
+            $.ajax({
+                type:"POST",
+                url:"{% url 'core:my_studio_locs' %}",
+                data: $("#my_studio_location_form").serialize(),
+                success: function(data) {
+                    if (data.isValid) {
+                        $("#my_studio_location_form").removeClass("was-validated")
+                            .addClass("needs-validation");
+                        $('#studio_location_modal').modal('hide');
+                        showAppAlert("warning", data.msg);
+                    } else {
+                        showAppAlert("warning", data.msg, {"body": JSON.stringify(data.errors)});
+                    }
+                },
+                error: function(xhr){
+                    showAppAlert("danger", "Failed");
+                    console.log(xhr);
+                    console.log('Request Status: ' + xhr.status + ' Status Text: ' + xhr.statusText + ' ' + xhr.responseText);
+                }
+            });
+        } 
+    }
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,531 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+<div class="">
+    <div class="row">
+        <div class="col-xl-4">
+            {% include "components/profile/profile_card.html" with profile=profile %}
+        </div>
+
+        <div class="col-xl-8">
+            <div class="card">
+                <div class="card-body pt-3">
+                    <!-- Bordered Tabs -->
+                    <ul class="nav nav-tabs nav-tabs-bordered">
+                        <li class="nav-item">
+                            <button class="nav-link active" data-bs-toggle="tab" 
+                                    data-bs-target="#profile_overview">
+                                {% translate "Overview" %}
+                            </button>
+                        </li>
+
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" 
+                                    data-bs-target="#profile_edit">
+                                {% translate "Edit Profile" %}
+                            </button>
+                        </li>
+
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab"
+                                    data-bs-target="#profile_settings">
+                                {% translate "Settings" %}
+                            </button>
+                        </li>
+
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab"
+                                    data-bs-target="#profile_change_password">
+                                {% translate "Change Password" %}
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="tab-content pt-2">
+                        <div class="tab-pane fade show active profile-overview"
+                             id="profile_overview">
+                            <div class="row mb-2">
+                                <div class="col d-md-flex justify-content-end">
+                                    <a class="btn btn-primary btn-sm my-1 me-md-1"
+                                       href="{% url 'account_email' %}" role="button">
+                                       {% translate "Manage your emails" %}
+                                    </a>
+                                    <a class="btn btn-success btn-sm my-1 ms-md-1"
+                                       href="{% url 'account_email' %}" role="button">
+                                        {% translate "Manage Subscription" %}
+                                    </a>
+                                </div>
+                            </div>
+
+                            <h5 class="card-title">{% translate "About" %}</h5>
+                            <p class="small fst-italic">
+                                {{ profile.bio|default_if_none:"" }}
+                            </p>
+
+                            <h5 class="card-title">{% translate "Profile Details" %}</h5>
+
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label">
+                                    {% translate "Username" %}
+                                </div>
+                                <div class="col-lg-9 col-md-8">
+                                    {{ user.username }}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label">
+                                    {% translate "Full Name" %}
+                                </div>
+                                <div class="col-lg-9 col-md-8">
+                                    {{ profile.full_name|default_if_none:user.get_full_name }}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label">
+                                    {% translate "Email" %}
+                                </div>
+                                <div class="col-lg-9 col-md-8">
+                                    {{ user_email }}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label">
+                                    {% translate "Phone" %}
+                                </div>
+                                <div class="col-lg-9 col-md-8">
+                                    {{ profile.phone|default_if_none:'' }}
+                                </div>
+                            </div>
+
+                            <!-- Add genres/interests here -->
+                            <div class="row my-2">
+                                <div class="col">
+                                    <small class="fw-bold d-block">{% translate "My Genres" %}</small>
+                                    <div class="my-2">
+                                    {% if profile.genres.count %}
+                                        {% for genre in profile.genres.all %}
+                                        <span class="badge bg-light text-dark mx-1">{{ genre.name }}</span>
+                                        {% endfor %}
+                                    {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="tab-pane fade profile-edit pt-3" id="profile_edit">
+                            {% if profile_form.errors %}
+                            <div id="form_errors" class="col-12 text-danger py-2">
+                                <div class="inner">
+                                    <p>
+                                        {% blocktrans %}
+                                        There were some errors in the information you entered. Please try again.
+                                        {% endblocktrans %}
+                                    </p>
+                                    <ul>
+                                        {% for field in profile_form %}
+                                            {% if field.errors %}
+                                            <li>{{ field.label }}: {{ field.errors|striptags }}</li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <!-- Profile Edit Form -->
+                            <form class="needs-validation" method="POST" autocomplete="off"
+                                  id="profile_form" novalidate enctype="multipart/form-data"
+                                  action="{% url 'core:my_profile' %}">
+                                {% csrf_token %}
+                                <div class="row mb-3">
+                                    <label for="profile_photo" class="col-md-4 col-lg-3 col-form-label">
+                                        {% translate "Profile Image" %}
+                                    </label>
+                                    <div class="col-md-8 col-lg-9">
+                                        {% if profile.profile_photo %}
+                                        <img src="{{ profile.profile_photo.url }}"
+                                             alt="{% translate 'Your Profile Photo' %}">
+                                        {% endif %}
+                                        <div class="pt-2">
+                                            <div class="col">
+                                                <input class="form-control" name="profile_photo" 
+                                                       type="file" id="profile_photo">
+                                            </div>
+                                            {% if profile.profile_photo %}
+                                            <div class="col">
+                                                <a href="#" class="btn btn-danger btn-sm" 
+                                                   title="{% translate 'Remove profile image' %}">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <input name="user_id" type="hidden" value="{{ user.id }}"
+                                           aria-label="{% trans "Profile user" %}">
+                                    <label for="profile_user_full_name"
+                                           class="col-md-4 col-lg-3 col-form-label">
+                                        {% translate "Full Name" %}
+                                    </label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="full_name" type="text" class="form-control"
+                                               id="profile_user_full_name"
+                                               value="{{ profile.full_name|default_if_none:user.get_full_name }}">
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <label for="profile_display_name"
+                                           class="col-md-4 col-lg-3 col-form-label">
+                                        {% translate "Display Name" %}
+                                    </label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="display_name" type="text" class="form-control"
+                                               id="profile_display_name" required
+                                               value="{{ profile.display_name|default_if_none:user.get_full_name }}">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label for="profile_bio" class="col-md-4 col-lg-3 col-form-label">
+                                        {% translate "About" %}
+                                    </label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <textarea name="bio" class="form-control" id="profile_bio"
+                                                  style="height: 100px"
+                                                  value="{{ profile.bio }}"></textarea>
+                                    </div>
+                                </div>
+
+                                {% comment "address info" %}
+                                <div class="row mb-3">
+                                    <label for="profile_address" class="col-md-4 col-lg-3 col-form-label">
+                                        {% translate "Address" %}
+                                    </label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="address" type="text" class="form-control"
+                                               id="profile_address"
+                                               value="{{ profile.address|default_if_none:'' }}"
+                                               placeholder="A108 Adam Street, New York, NY">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label for="profile_country" class="col-md-4 col-lg-3 col-form-label">
+                                        {% translate "Country" %}
+                                    </label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="country" type="text" class="form-control"
+                                               id="profile_country" required
+                                               value="{{ profile.country|default_if_none:'' }}">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label for="profile_country" class="col-md-4 col-lg-3 col-form-label">
+                                        {% translate "Postal Code" %}
+                                    </label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="postal_code" type="text" class="form-control"
+                                               id="profile_postal_code" required
+                                               value="{{ profile.country|default_if_none:'' }}">
+                                    </div>
+                                </div>
+                                {% endcomment %}
+
+                                <div class="row mb-3">
+                                    <label for="profile_country" class="col-md-4 col-lg-3 col-form-label">
+                                        {% translate "Country" %}
+                                    </label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="country" type="text" class="form-control"
+                                               id="profile_country" required
+                                               value="{{ profile.country|default_if_none:'' }}">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label for="profile_phone" class="col-md-4 col-lg-3 col-form-label">
+                                        {% translate "Phone" %}
+                                    </label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="phone" type="text" class="form-control" 
+                                               id="profile_phone"
+                                               value="{{ profile.phone|default_if_none:'' }}"
+                                               placeholder="(436) 486-3538 x29071">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label for="profile_dob" class="col-md-4 col-lg-3 col-form-label">
+                                        {% translate "Date of Birth" %}
+                                    </label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input class="form-control" type="date" 
+                                               id="profile_dob" value="{{ profile.dob|date:"Y-m-d" }}"
+                                               name="dob">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label for="profile_resume" class="col-md-4 col-lg-3 col-form-label">
+                                        {% translate "Resume" %}
+                                    </label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input class="form-control" type="file" 
+                                               id="profile_resume" name="resume">
+                                    </div>
+                                    {% if profile.resume %}
+                                    <div class="col-6">
+                                        <a href="{{ profile.resume.url }}" target="_blank"
+                                           class="text-primary">{% translate "Current Resume" %}</a>
+                                    </div>
+                                    <div class="col-6">
+                                        <button type="button" class="btn btn-danger btn-sm" 
+                                                title="{% translate 'Clear resume' %}">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label for="profile_genre" class="col-md-4 col-lg-3 col-form-label">
+                                        {% translate "Genre" %}
+                                    </label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select class="" id="profile_genres" 
+                                                multiple name="genres"
+                                                data-placeholder="{% translate 'Select desired genres' %}">
+                                            {% for genre in genres %}
+                                                <option value="{{ genre.id }}" {% if genre in profile.genres.all %}selected{% endif %}>
+                                                    {{ genre.name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                        <small class="form-text text-small text-muted d-none">
+                                            {% blocktrans %}
+                                            Start typing to search and click on preferred genre.
+                                            {% endblocktrans %}
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label for="profile_twitter" class="col-md-4 col-lg-3 col-form-label">
+                                        {% translate "Twitter Profile" %}
+                                    </label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="twitter" type="text" class="form-control" 
+                                               id="profile_twitter"
+                                               value="{{ profile.twitter|default_if_none:'' }}"
+                                               placeholder="https://twitter.com/#">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label for="profile_facebook" class="col-md-4 col-lg-3 col-form-label">
+                                        {% translate "Facebook Profile" %}
+                                    </label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="facebook" type="text" class="form-control"
+                                               id="profile_facebook" 
+                                               value="{{ profile.facebook|default_if_none:'' }}"
+                                               placeholder="https://facebook.com/#">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label for="profile_instagram" class="col-md-4 col-lg-3 col-form-label">
+                                        {% translate "Instagram Profile" %}
+                                    </label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="instagram" type="text" class="form-control"
+                                               id="profile_instagram"
+                                               value="{{ profile.instagram|default_if_none:'' }}"
+                                               placeholder="https://instagram.com/#">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label for="profile_linkedin" class="col-md-4 col-lg-3 col-form-label">
+                                        {% translate "Linkedin Profile" %}
+                                    </label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="linkedin" type="text" class="form-control" 
+                                               id="profile_linkedin"
+                                               value="{{ profile.linkedin|default_if_none:'' }}"
+                                               placeholder="https://linkedin.com/#">
+                                    </div>
+                                </div>
+
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary">
+                                        {% translate "Save Changes" %}
+                                    </button>
+                                </div>
+                            </form><!-- End Profile Edit Form -->
+                        </div>
+
+                        <div class="tab-pane fade pt-3" id="profile_settings">
+                        <!-- Settings Form -->
+                            <form>
+
+                                <div class="row mb-3">
+                                <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Email Notifications</label>
+                                <div class="col-md-8 col-lg-9">
+                                    <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="changesMade" checked>
+                                    <label class="form-check-label" for="changesMade">
+                                        Changes made to your account
+                                    </label>
+                                    </div>
+                                    <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="newProducts" checked>
+                                    <label class="form-check-label" for="newProducts">
+                                        Information on new products and services
+                                    </label>
+                                    </div>
+                                    <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="proOffers">
+                                    <label class="form-check-label" for="proOffers">
+                                        Marketing and promo offers
+                                    </label>
+                                    </div>
+                                    <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="securityNotify" checked disabled>
+                                    <label class="form-check-label" for="securityNotify">
+                                        Security alerts
+                                    </label>
+                                    </div>
+                                </div>
+                                </div>
+
+                                <div class="text-center">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </div>
+                            </form><!-- End settings Form -->
+                        </div>
+
+                        <div class="tab-pane fade pt-3" id="profile_change_password">
+                            <!-- Change Password Form core:user_pwd_change -->
+                            <form class="needs-validation" method="POST" novalidate
+                                  id="pwd_update_form" autocomplete="off"
+                                  action="{% url 'account_change_password' %}">
+                                {% csrf_token %}
+                                <div class="row mb-3">
+                                    <label for="id_old_password" class="col-md-4 col-lg-3 col-form-label">
+                                        {% translate "Current Password" %}
+                                    </label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input type="password" name="old_password" 
+                                               autofocus="" class="form-control" required
+                                               autocomplete="current-password" id="id_old_password">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-1">
+                                    <label for="id_new_password1" class="col-md-4 col-lg-3 col-form-label">
+                                        {% translate "New Password" %}
+                                    </label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input type="password" name="new_password1" required 
+                                               autocomplete="new-password" class="form-control"
+                                               id="id_new_password1">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <small class="text-muted">
+                                            {{ password_change_form.new_password1.help_text }}
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label for="id_new_password2" class="col-md-4 col-lg-3 col-form-label">
+                                        {% translate "Re-enter New Password" %}
+                                    </label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input type="password" name="new_password2"
+                                               autocomplete="new-password" required
+                                               class="form-control" id="id_new_password2">
+                                    </div>
+                                </div>
+
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary">
+                                        {% translate "Change Password" %}
+                                    </button>
+                                </div>
+                            </form>
+
+                        </div>
+
+                    </div><!-- End Bordered Tabs -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block js_script %}
+
+<script>
+    $(document).ready(function() {
+        $('#profile_genres').selectize({
+            plugins: ["remove_button", "auto_position"],
+            maxItems: null,
+            valueField: 'id',
+            labelField: 'name',
+            searchField: 'name',
+            delimiter: ',',
+            create: function (input, callback) {
+                let term = $.trim(input);
+
+                if (!term.length || term.length < 3) return callback();
+
+                let genreId = -1,
+                    genreName = "",
+                    validGenre = false;
+
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'core:active_genres' %}",
+                    data: {
+                        'name': term,
+                        'slug': term.trim().replace(' ', '-'),
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function(data) {
+                        if (data.isValid) {
+                            callback({ value: data.id, text: input });
+                        }
+                    },
+                    error: function() {
+                        callback();
+                    },
+                });
+            }
+        });
+
+        // let profileGenreSelectize = $('#profile_genres')[0].selectize;
+        // profileGenreSelectize.setValue("{{ my_genres }}");
+        // console.log("{{ my_genres }}")
+    });
+</script>
+
+{% endblock %}

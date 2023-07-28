@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+
+<div class="">
+    <div class="row">
+        <div class="col-lg-7">
+            <div class="card">
+                <div class="card-body pt-2">
+                    <h5 class="card-title text-blue ">
+                        {{ listing.title }}
+                    </h5>
+                    <div class="d-flex justify-content-end my-1">
+                        <small class="text-muted">
+                            {{ listing.created_at|date:"D, M d, Y" }}
+                        </small>
+                    </div>
+                    <p class="mb-0">{{ listing.description }}</p>
+                    <div class="my-1">
+                        {% if listing.tags %}
+                            {% for tag in listing.tags.all %}
+                            <span class="badge bg-light text-dark mx-1">{{ tag.name }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,167 @@
+{% load i18n %}
+{% load static %}
+
+<div class="row mb-2">
+    <div class="col">
+        <a class="btn btn-onyx w-100" 
+           href="{% url 'core:profiles' %}" role="button">
+           {% translate "Find Dancers" %}
+        </a>
+    </div>
+    <div class="col">
+        <a class="btn btn-outline-onyx w-100" 
+           href="{% url 'core:creators' %}" role="button">
+            {% translate "Find Creators" %}
+        </a>
+    </div>
+</div>
+
+<div class="d-grid my-2">
+    <a class="btn btn-rosegold" 
+       href="{% url 'core:studios' %}" role="button">
+       {% translate "Find Studios" %}
+    </a>
+</div>
+
+<div class="d-grid my-2">
+    <a class="btn btn-blue" 
+       href="{% url 'core:events_calendar' %}" role="button">
+       {% translate "Events this week" %}
+    </a>
+</div>
+
+{% if sidebar_listings %}
+<div class="card">
+    <div class="card-body align-items-center">
+        <div class="row mt-4 mb-1">
+            <div id="dcc_right_sidebar_listings" class="col-12">
+                <h5 class="card-title">
+                    {% translate "Listings" %}
+                </h5>
+
+                <div class="list-group list-group-flush">
+                    {% for listing in sidebar_listings %}
+                        <a href="{% url 'core:listings' %}{{ listing.pk }}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <p class="mb-1 fw-bold">{{ listing.title }}</p>
+                                <small class="text-muted">{{ listing.created_at|timesince }}</small>
+                            </div>
+                            <!-- Add genres/interests here -->
+                            <div class="row my-1">
+                                <div class="col">
+                                    <div class="my-1">
+                                    {% if listing.tags %}
+                                        {% for tag in listing.tags.all %}
+                                        <span class="badge bg-light text-dark mx-1">{{ tag.name }}</span>
+                                        {% endfor %}
+                                    {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+
+                <div class="d-grid my-2">
+                    <a class="btn btn-sm btn-onyx" 
+                       href="{% url 'core:listings' %}" role="button">
+                       {% translate "See All" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if sidebar_image_ads %}
+<div class="card">
+    <div class="card-body align-items-center">
+        <div class="row mt-4 mb-1">
+            <div id="dcc_right_sidebar_ads" class="col-12">
+                <div id="dcc_right_sidebar_ads_carousel" class="carousel slide"
+                     data-bs-ride="carousel" data-bs-touch="false">
+                    <div class="carousel-inner">
+                        {% for img_ad in sidebar_image_ads %}
+                        <div class="carousel-item {% if forloop.first %} active{% endif %}">
+                            <img src="{{ img_ad.image.url }}"
+                                 class="d-block w-100" alt="{{ img_ad.name }}">
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if top_studio_events %}
+<div class="card">
+    <div class="card-body align-items-center">
+        <div class="row">
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="card">
+    <div class="card-body align-items-center">
+        <div class="row mt-4 mb-1">
+            <div id="dcc_right_sidebar_forum_topics" class="col-12">
+                <h5 class="text-blue">{% translate "Ask a Question" %}</h5>
+
+                <div class="alert d-none" role="alert" id="forum_topic_alert">
+                </div>
+
+                {% comment "" %}
+                <form hx-post="/a/forum_topic/create/"
+                      hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                      hx-indicator="#question_post_indicator"></form>
+                {% endcomment %}
+                
+                <form id="forum_topic_form" class="needs-validation"
+                      autocomplete="off" novalidate method="POST"
+                      enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-12">
+                            <input name="title" type="text" class="form-control my-2"
+                                   id="forum_topic_form_title" required
+                                   aria-label="{% translate 'Question Topic' %}"
+                                   autocomplete="hidden" minlength="6"
+                                   placeholder="{% translate 'Enter your question here' %}">
+                            <textarea name="body" class="form-control my-2"
+                                      id="forum_topic_form_body" 
+                                      aria-label="{% translate 'Question Description' %}"
+                                      placeholder="{% translate 'Add some descpription' %}"
+                                      style="height: 60px"></textarea>
+                        </div>
+                        <div class="d-grid my-2">
+                            <button type="button" onclick="createForumTopic()"
+                                    class="btn btn-sm btn-blue">
+                                {% translate "Submit" %}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                {% if sidebar_forum_topics %}
+                <ul class="list-group list-group-flush">
+                    {% for topic in sidebar_forum_topics %}
+                        <li class="list-group-item">{{ topic.title }}</li>
+                    {% endfor %}
+                </ul>
+                
+                <div class="d-grid my-2">
+                    <a class="btn btn-sm btn-onyx" 
+                       href="{% url 'core:topics' %}" role="button">
+                       {% translate "See All" %}
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+

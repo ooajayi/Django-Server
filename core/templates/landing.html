@@ -1,0 +1,779 @@
+{% load i18n %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Dance.Create.Connect</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    {% block extra_head %}
+    {% endblock %}
+
+    <!-- Favicons -->
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- Vendor CSS Files  -->
+    <link href="{% static "fw/NiceAdmin/assets/vendor/bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
+    <!-- 
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
+          rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
+          crossorigin="anonymous">
+    -->  
+    <!-- Template Main CSS File -->
+    <link href="{% static "fw/NiceAdmin/assets/css/style.css" %}" rel="stylesheet">
+    <link href="{% static "core/css/core.css" %}" rel="stylesheet">
+    {% block css_styles %}
+    {% endblock %}
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" 
+         style="background-color: #e3f2fd;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                {% if dcc.def_logo %}
+                <img src="{{ dcc.def_logo.url }}" alt="{% translate 'DCC logo' %}"
+                     width="30" height="24" class="d-inline-block align-text-top">
+                {% else %}
+                <img src="{% static "core/images/logo/DCC-Logo-Black.png" %}" 
+                     title="{% translate 'DCC logo' %}" alt="{% translate 'Application logo' %}"
+                     height="45" loading="lazy">
+                {% endif %}
+                <span class="d-none">Dance.Create.Connect</span>
+            </a>
+            <button class="navbar-toggler" type="button" 
+                    data-bs-toggle="collapse" aria-expanded="false" 
+                    data-bs-target="#dcc_core_home_nav_content" 
+                    aria-controls="dcc_core_home_nav_content" 
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="dcc_core_home_nav_content">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item mx-3">
+                        <a class="nav-link" href="{% url 'account_login' %}">
+                            {% translate 'Login / Register' %}
+                        </a>
+                    </li>
+                    <li class="nav-item mx-3">
+                        <a class="nav-link" href="{% url 'core:contact' %}">
+                            {% translate 'Contact' %}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <main id="main" class="main mt-0 px-0">
+            {% include 'components/messages.html' %}
+            <div class="alert sticky-top d-none" role="alert" id="dcc_msg_alert">
+                <div id="dcc_msg_alert_content">
+                    <h5 class="alert-heading"></h5>
+                    <p id="msg_body"></p>
+                </div>
+            </div>
+
+            <section class="section dashboard mt-4">
+                {% block banner %}
+                {% endblock %}
+
+                {% block content %}
+                {% endblock %}
+
+                <div class="bg-rosegold text-center pt-4">
+                    {% if dcc.def_logo %}
+                    <img src="{{ dcc.def_logo.url }}" class="align-center text-center img-fluid"
+                         alt="{% translate 'DCC logo' %}" width="290">
+                    {% else %}
+                        <img src="{% static "core/images/logo/DCC-Logo-Black.png" %}" 
+                            title="{% translate 'DCC logo' %}" alt="{% translate 'Application logo' %}"
+                            width="290" class="align-center text-center img-fluid" loading="lazy">
+                    {% endif %}
+                    <h1 class="mb-0 py-5 text-capitalize" style="font-size: 3.8rem;">
+                        Dance. Create. Connect!
+                    </h1>
+                </div>
+                
+                
+                <div class="row pt-2 pt-xl-5">
+                    <article class="d-none d-lg-flex position-relative hp-item col-12">
+                        <div class="hp-item-bg-wrapper w-50 position-relative bg-blue float-left">
+                            
+                        </div>
+                        <div class="hp-item-image-wrapper w-50">
+                            <img class="img-fluid" min-height="300px"
+                                 src="{% static 'core/images/landing/dancer-1.jpg' %}">
+                        </div>
+                        <div class="hp-item-overlay">
+                            <div class="hp-item-overlay-text p-3">
+                                <h3 class=" mb-1 text-white text-uppercase text-center">
+                                    {% translate "A one-stop online hub to " %}<br>
+                                    {% translate "Dance, Create and Connect!" %}
+                                </h3>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="d-block d-lg-none">
+                        <div class="card">
+                            <img class="card-img-top" alt="{% translate 'Intro to DCC Dancer' %}"
+                                 src="{% static 'core/images/landing/dancer-1.jpg' %}">
+                            <div class="card-img-overlay hp-item-overlay-text">
+                              <h3 class="card-title">
+                                {% translate "A one-stop online hub to " %}
+                                {% translate "Dance, Create and Connect!" %}</h3>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="row pt-2 pt-xl-5">
+                    <article class="hp-item">
+                        <div class="card">
+                            <img class="card-img-top" alt="{% translate 'Intro to DCC Dancer' %}"
+                                 src="{% static 'core/images/landing/dancer-1.jpg' %}">
+                            
+                            <div class="d-none d-xl-block item-overlay hp-item-overlay-text p-5">
+                                <h2 class="mb-0">
+                                    {% translate "Dancers/Creators" %}
+                                </h2>
+                                <h4 class="card-title">
+                                    {% translate "Sign up: " %}
+                                    <span class="d-block mt-1 mb-3">
+                                        {% blocktranslate %}
+                                        Create your very own dance profile and add your dance experience, 
+                                        skills, and goals. Plus, upload videos or photos of your work!
+                                        {% endblocktranslate %}
+                                    </span>
+
+                                    {% translate "Discover opportunities: " %}
+                                    <span class="d-block mt-1 mb-3">
+                                        {% blocktranslate %}
+                                        Browse and search through a variety of dance-related events, classes, 
+                                        competitions, auditions, and more. Use our powerful search 
+                                        feature to filter your search by location, dance style, experience 
+                                        level, and other criteria.
+                                        {% endblocktranslate %}
+                                    </span>
+    
+                                    {% translate "Book studio space: " %}
+                                    <span class="d-block mt-1 mb-3">
+                                        {% blocktranslate %}
+                                        Our easy-to-use booking system helps you find and reserve studio space 
+                                        in your area, whether you're a dancer, creator or just looking for a 
+                                        place to practice. With just a few clicks, you can browse, check 
+                                        availability, and secure your booking hassle-free.
+                                        {% endblocktranslate %}
+                                    </span>
+    
+                                    {% translate "Find a substitute: " %}
+                                    <span class="d-block mt-1 mb-3">
+                                        {% blocktranslate %}
+                                        Can't make it to class? Our easy and efficient notification system 
+                                        allows you to post and notify creators available in your area with ease!
+                                        {% endblocktranslate %}
+                                    </span>
+    
+                                    {% translate "Connect: " %}
+                                    <span class="d-block mt-1 mb-3">
+                                        {% blocktranslate %}
+                                        Connect with other members on D.C.C. by following them, commenting on their 
+                                        work, and messaging them directly. You can also join groups and forums 
+                                        to discuss all things dance.
+                                        {% endblocktranslate %}
+                                    </span>
+    
+                                    {% translate "Manage your career: " %}
+                                    <span class="d-block mt-1 mb-3">
+                                        {% blocktranslate %}
+                                        Take control of your dance career with our notification system that makes 
+                                        it easy for you to search for opportunities, while our extensive database 
+                                        of professionals and studios provides valuable connections to advance your career.
+                                        {% endblocktranslate %}
+                                    </span>
+                                </h4>
+                                <div class="d-grid gap-2 col-6 mx-auto">
+                                    <a class="btn btn-primary btn-lg my-3"
+                                       href="{% url 'account_login' %}" role="button">
+                                       {% translate "Sign Up" %}
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="d-block d-xl-none card-img-overlay hp-item-overlay">
+                                <ul class="list-group-flush w-100 hp-item-overlay-text">
+                                    <li class="list-group-item bg-transparent h4">
+                                        <i class="bi bi-check-circle me-1"></i> {% translate "Discover opportunities" %}
+                                    </li>
+                                    <li class="list-group-item bg-transparent h4">
+                                        <i class="bi bi-check-circle me-1"></i> {% translate "Book studio space" %}
+                                    </li>
+                                    <li class="list-group-item bg-transparent h4">
+                                        <i class="bi bi-check-circle me-1"></i> {% translate "Find a substitute" %}
+                                    </li>
+                                    <li class="list-group-item bg-transparent h4">
+                                        <i class="bi bi-check-circle me-1"></i> {% translate "Connect" %}
+                                    </li>
+                                    <li class="list-group-item bg-transparent h4">
+                                        <i class="bi bi-check-circle me-1"></i> {% translate "Manage your career" %}
+                                    </li>
+                                    <li class="list-group-item bg-transparent mt-5 h3">
+                                        <a href="#">
+                                            <i class="bi bi-check-circle me-1"></i> 
+                                            {% translate "Sign Up" %}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                
+                <div class="row pt-2 pt-xl-5">
+                    <article class="hp-item">
+                        <div class="card">
+                            <img class="card-img-top" alt="{% translate 'Intro to DCC Dancer' %}"
+                                 src="{% static 'core/images/landing/studio-1.jpg' %}">
+                            
+                            <div class="d-none d-xl-block item-overlay hp-item-overlay-text p-5">
+                                <h2 class="mb-0">
+                                    {% translate "Studio" %}
+                                </h2>
+                                <h4 class="card-title">
+                                    {% translate "Advertise: " %}
+                                    <span class="d-block mt-1 mb-3">
+                                        {% blocktranslate %}
+                                        Our cutting-edge website, innovative tools, and intuitive 
+                                        interface helps you easily advertise your studio and connect 
+                                        with potential dancers and creators from around the world. 
+                                        Whether you're looking to fill your classes, book open 
+                                        studio space, promote your events, or attract new talent to 
+                                        your studio, our platform has everything you need to succeed. 
+                                        {% endblocktranslate %}
+                                    </span>
+
+                                    {% translate "Hire dancers and creators: " %}
+                                    <span class="d-block mt-1 mb-3">
+                                        {% blocktranslate %}
+                                        Our powerful system allows you to easily access a vast database 
+                                        of potential creators in your area in real time, ensuring that 
+                                        you never miss a beat. Whether you're looking for a new creator 
+                                        to bring fresh ideas to your studio or you need a reliable 
+                                        substitute on short notice, our platform has you covered. 
+                                        With our user-friendly interface, posting your job opening or 
+                                        substitute request is a breeze; our system will quickly post 
+                                        the request and automatically notify qualified candidates in 
+                                        your area. With our streamlined and user-friendly interface, 
+                                        finding the perfect fit for your studio has never been easier!
+                                        {% endblocktranslate %}
+                                    </span>
+                                </h4>
+                                <div class="d-grid gap-2 col-6 mt-3 mx-auto">
+                                    <a class="btn btn-primary btn-lg my-3"
+                                       href="{% url 'account_login' %}" role="button">
+                                       {% translate "Sign Up" %}
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="d-block d-xl-none card-img-overlay hp-item-overlay">
+                                <ul class="list-group-flush w-100 hp-item-overlay-text">
+                                    <li class="list-group-item bg-transparent h4">
+                                        <i class="bi bi-check-circle me-1"></i> {% translate "Advertise" %}
+                                    </li>
+                                    <li class="list-group-item bg-transparent h4">
+                                        <i class="bi bi-check-circle me-1"></i> {% translate "Hire dancers and creators" %}
+                                    </li>
+                                    <li class="list-group-item bg-transparent mt-5 h3">
+                                        <a href="#">
+                                            <i class="bi bi-check-circle me-1"></i> 
+                                            {% translate "Sign Up" %}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="row pt-2 pt-xl-5">
+                    <article class="hp-item">
+                        <div class="card">
+                            <img class="card-img-top" alt="{% translate 'DCC Perks' %}"
+                                 src="{% static 'core/images/landing/hp-ad-1.jpg' %}">
+                            
+                            <div class="d-none d-xl-block hp-item-overlay-text item-overlay p-5">
+                                <h4 class="card-title">
+                                    {% translate "Advertise: " %}
+                                    <span class="d-block mb-3">
+                                        {% blocktranslate %}
+                                        Promote your event, competition, sale, or production and connect 
+                                        with a diverse database of industry professionals who share your 
+                                        interests, no matter where you are located!
+                                        {% endblocktranslate %}
+                                    </span>
+                                </h4>
+
+                                <h4 class="card-title">
+                                    {% translate "Resources: " %}
+                                    <span class="d-block mb-3">
+                                        {% blocktranslate %}
+                                        Seeking inspiration or expertise? Our resource center provides a 
+                                        platform for you to collaborate and connect, ask questions, offer 
+                                        advice and tap into a supportive community worldwide!
+                                        {% endblocktranslate %}
+                                    </span>
+                                </h4>
+                                <div class="d-grid gap-2 col-6 mt-3 mx-auto">
+                                    <a class="btn btn-primary btn-lg my-3"
+                                       href="{% url 'account_login' %}" role="button">
+                                       {% translate "Sign Up" %}
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="d-block d-xl-none card-img-overlay hp-item-overlay">
+                                <ul class="list-group-flush w-100 hp-item-overlay-text">
+                                    <li class="list-group-item bg-transparent h4">
+                                        <i class="bi bi-check-circle me-1"></i> {% translate "Promote Event" %}
+                                    </li>
+                                    <li class="list-group-item bg-transparent h4">
+                                        <i class="bi bi-check-circle me-1"></i> {% translate "Find Resources" %}
+                                    </li>
+                                    <li class="list-group-item bg-transparent mt-5 h3">
+                                        <a href="#">
+                                            <i class="bi bi-check-circle me-1"></i> 
+                                            {% translate "Sign Up" %}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                
+                <div class="row pt-2 pt-xl-5">
+                    <article class="d-none d-lg-flex position-relative hp-item col-12">
+                        <div class="hp-item-bg-wrapper w-50 position-relative bg-blue text-white float-left p-5">
+                            <h4 class="mt-4">
+                                {% translate "Advertise: " %}
+                            </h4>
+                            <h5 class="d-block mb-3">
+                                {% blocktranslate %}
+                                Promote your event, competition, sale, or production and connect 
+                                with a diverse database of industry professionals who share your 
+                                interests, no matter where you are located!
+                                {% endblocktranslate %}
+                            </h5>
+
+                            <h4 class="mt-5">{% translate "Resources: " %}</h4>
+                            <h5 class="d-block mb-3">
+                                {% blocktranslate %}
+                                Seeking inspiration or expertise? Our resource center provides a 
+                                platform for you to collaborate and connect, ask questions, offer 
+                                advice and tap into a supportive community worldwide!
+                                {% endblocktranslate %}
+                            </h5>
+                        </div>
+                        <div class="hp-item-image-wrapper w-50">
+                            <img class="img-fluid" min-height="300px"
+                                 src="{% static 'core/images/landing/hp-ad-1.jpg' %}">
+                        </div>
+                        
+                        <div class="hp-item-overlay">
+                            <div class="hp-item-br-overlay-text p-3">
+                                <a class="btn btn-light btn-sm"
+                                   href="{% url 'account_login' %}" role="button">
+                                   {% translate "Sign Up" %}
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="d-block d-lg-none hp-item">
+                        <div class="card">
+                            <img class="card-img-top" alt="{% translate 'Intro to DCC Dancer' %}"
+                                 src="{% static 'core/images/landing/hp-ad-1.jpg' %}">
+                            <div class="card-img-overlay item-overlay hp-item-overlay">
+                                <ul class="list-group-flush w-100 hp-item-overlay-text">
+                                    <li class="list-group-item bg-transparent h4">
+                                        <i class="bi bi-check-circle me-1"></i> {% translate "Promote Event" %}
+                                    </li>
+                                    <li class="list-group-item bg-transparent h4">
+                                        <i class="bi bi-check-circle me-1"></i> {% translate "Find Resources" %}
+                                    </li>
+                                    <li class="list-group-item bg-transparent mt-5 h3">
+                                        <a href="#">
+                                            <i class="bi bi-check-circle me-1"></i> 
+                                            {% translate "Sign Up" %}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                {% comment %}
+                <div class="bg-rosegold text-black text-center py-5 px-3">
+                    <div class="row">
+                        <div class="col">
+                            <h2 class="mb-0 py-3 landing-pg-h2">
+                                {% translate "Dancers/Creators" %}
+                            </h2>
+
+                            <div class="accordion accordion-flush d-none" id="accordionFlushExample">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="dancer_signup_header">
+                                        <button class="accordion-button" type="button" 
+                                                data-bs-toggle="collapse" aria-expanded="true" 
+                                                data-bs-target="#dancer_signup" 
+                                                aria-controls="dancer_signup">
+                                            {% translate "Sign Up" %}
+                                        </button>
+                                    </h2>
+                                    <div id="dancer_signup" class="accordion-collapse collapse show" 
+                                       aria-labelledby="dancer_signup_header" 
+                                       data-bs-parent="#accordionFlushExample" style="">
+                                        <div class="accordion-body">
+                                            <p>
+                                            {% blocktranslate %}
+                                            Create your very own dance profile and add your dance experience, 
+                                            skills, and goals. Plus, upload videos or photos of your work!
+                                            {% endblocktranslate %}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                  <h2 class="accordion-header" id="flush-headingTwo">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                                      Accordion Item #2
+                                    </button>
+                                  </h2>
+                                  <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+                                    <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the second item's accordion body. Let's imagine this being filled with some actual content.</div>
+                                  </div>
+                                </div>
+                                <div class="accordion-item">
+                                  <h2 class="accordion-header" id="flush-headingThree">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                                      Accordion Item #3
+                                    </button>
+                                  </h2>
+                                  <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+                                    <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the third item's accordion body. Nothing more exciting happening here in terms of content, but just filling up the space to make it look, at least at first glance, a bit more representative of how this would look in a real-world application.</div>
+                                  </div>
+                                </div>
+                            </div>
+
+                            <h4 class="mb-3 py-3">
+                                <b class="d-block">{% translate "Sign up: " %}</b>
+                                <span class="d-block mb-3">
+                                    {% blocktranslate %}
+                                    Create your very own dance profile and add your dance experience, 
+                                    skills, and goals. Plus, upload videos or photos of your work!
+                                    {% endblocktranslate %}
+                                </span>
+
+                                <b class="d-block">{% translate "Discover opportunities: " %}</b>
+                                <span class="d-block mb-3">
+                                    {% blocktranslate %}
+                                    Browse and search through a variety of dance-related events, classes, 
+                                    competitions, auditions, and more. Use our powerful search 
+                                    feature to filter your search by location, dance style, experience 
+                                    level, and other criteria.
+                                    {% endblocktranslate %}
+                                </span>
+
+                                <b class="d-block">{% translate "Book studio space: " %}</b>
+                                <span class="d-block mb-3">
+                                    {% blocktranslate %}
+                                    Our easy-to-use booking system helps you find and reserve studio space 
+                                    in your area, whether you're a dancer, creator or just looking for a 
+                                    place to practice. With just a few clicks, you can browse, check 
+                                    availability, and secure your booking hassle-free.
+                                    {% endblocktranslate %}
+                                </span>
+
+                                <b class="d-block">{% translate "Find a substitute: " %}</b>
+                                <span class="d-block mb-3">
+                                    {% blocktranslate %}
+                                    Can't make it to class? Our easy and efficient notification system 
+                                    allows you to post and notify creators available in your area with ease!
+                                    {% endblocktranslate %}
+                                </span>
+
+                                <b class="d-block">{% translate "Connect: " %}</b>
+                                <span class="d-block mb-3">
+                                    {% blocktranslate %}
+                                    Connect with other members on D.C.C. by following them, commenting on their 
+                                    work, and messaging them directly. You can also join groups and forums 
+                                    to discuss all things dance.
+                                    {% endblocktranslate %}
+                                </span>
+
+                                <b class="d-block">{% translate "Manage your career: " %}</b>
+                                <span class="d-block mb-3">
+                                    {% blocktranslate %}
+                                    Take control of your dance career with our notification system that makes 
+                                    it easy for you to search for opportunities, while our extensive database 
+                                    of professionals and studios provides valuable connections to advance your career.
+                                    {% endblocktranslate %}
+                                </span>
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2 col-6 mx-auto">
+                        <a class="btn btn-primary btn-lg my-3"
+                           href="{% url 'account_login' %}" role="button">
+                           {% translate "Sign Up" %}
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="bg-onyx text-white text-center py-5 px-3" style="opacity: 0.6;">
+                    <div class="row">
+                        <div class="col">
+                            <h2 class="mb-0 py-3 landing-pg-h2">
+                                {% translate "Studio" %}
+                            </h2>
+
+                            <h4 class="mb-3 py-3">
+                                <b class="d-block">{% translate "Advertise: " %}</b>
+                                <span class="d-block mb-3">
+                                    {% blocktranslate %}
+                                    Our cutting-edge website, innovative tools, and intuitive 
+                                    interface helps you easily advertise your studio and connect 
+                                    with potential dancers and creators from around the world. 
+                                    Whether you're looking to fill your classes, book open 
+                                    studio space, promote your events, or attract new talent to 
+                                    your studio, our platform has everything you need to succeed. 
+                                    {% endblocktranslate %}
+                                </span>
+
+                                <b class="d-block">{% translate "Hire dancers and creators: " %}</b>
+                                <span class="d-block mb-3">
+                                    {% blocktranslate %}
+                                    Our powerful system allows you to easily access a vast database 
+                                    of potential creators in your area in real time, ensuring that 
+                                    you never miss a beat. Whether you're looking for a new creator 
+                                    to bring fresh ideas to your studio or you need a reliable 
+                                    substitute on short notice, our platform has you covered. 
+                                    With our user-friendly interface, posting your job opening or 
+                                    substitute request is a breeze; our system will quickly post 
+                                    the request and automatically notify qualified candidates in 
+                                    your area. With our streamlined and user-friendly interface, 
+                                    finding the perfect fit for your studio has never been easier!
+                                    {% endblocktranslate %}
+                                </span>
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2 col-6 mx-auto">
+                        <a class="btn btn-primary btn-lg my-3"
+                           href="{% url 'account_login' %}" role="button">
+                           {% translate "Sign Up" %}
+                        </a>
+                    </div>
+                </div>
+
+
+                <div class="landing-parallax"></div>
+                {% endcomment %}
+                <div class="row">
+                    <script async src="https://js.stripe.com/v3/pricing-table.js"></script>
+                    <stripe-pricing-table pricing-table-id="prctbl_1MfpbMLzEBzHdt6dI6OpPgwH"
+                    publishable-key="pk_test_51MfSXXLzEBzHdt6d5qYHQt9vuoRGa7FtqxVw3GseW8MnsJjdIo6IXRFvU0ypmmWQ4ZG4xXN8kv2MVvWzQgUsn2Kv00wf24Rbkx">
+                    </stripe-pricing-table>
+                </div>
+
+                {% comment %}
+                <div class="bg-rosegold text-center text-dark py-5 px-3">
+                    <div class="row">
+                        <div class="col">
+                            <h2 class="mb-3 py-3 landing-pg-h2">
+                                {% translate "Advertise" %}
+                            </h2>
+
+                            <h4 class="mb-3 py-3">
+                                {% blocktranslate %}
+                                Promote your event, competition, sale, or production and connect 
+                                with a diverse database of industry professionals who share your 
+                                interests, no matter where you are located!
+                                {% endblocktranslate %}
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="landing-parallax"></div>
+
+                <div class="bg-onyx text-center text-white py-5 px-3" style="opacity: 0.6;">
+                    <div class="row">
+                        <div class="col">
+                            <h2 class="mb-3 py-3 landing-pg-h2">
+                                {% translate "Resources" %}
+                            </h2>
+
+                            <h4 class="mb-0 py-3">
+                                {% blocktranslate %}
+                                Seeking inspiration or expertise? Our resource center provides a 
+                                platform for you to collaborate and connect, ask questions, offer 
+                                advice and tap into a supportive community worldwide!
+                                {% endblocktranslate %}
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center py-5 my-3">
+                    <div class="d-grid gap-2 col-6 mx-auto">
+                        <a class="btn btn-primary btn-lg"
+                           href="{% url 'account_login' %}" role="button">
+                           {% translate "Sign Up" %}
+                        </a>
+                    </div>
+                </div>
+                {% endcomment %}
+            </section>
+
+        </main><!-- End #main -->
+    </div>
+
+    {% block extra_body %}
+    {% endblock %}
+
+    <div class="container-fluid">
+        <footer class="pb-2 pt-1 footer">
+            <div class="row py-4">
+                <div class="col-12 col-md-2">
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2">
+                            <a href="{% url 'core:contact' %}" class="nav-link p-0 text-muted">
+                                {% translate "Contact" %}
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a href="{% url 'core:contact' %}" class="nav-link p-0 text-muted">
+                                {% translate "Pricing" %}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+      
+                <div class="col-12 col-md-2">
+                    <ul class="nav flex-column">
+                        {% if dcc.privacy_policy %}
+                            <li class="nav-item mb-2">
+                                <a href="{{ dcc.privacy_policy.url }}" download
+                                   class="text-decoration-none" target="_blank">
+                                    {% translate "Privacy Policy" %}
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if dcc.tandc %}
+                            <li class="nav-item mb-2">
+                                <a href="{{ dcc.tandc.url }}" download 
+                                   class="text-decoration-none" target="_blank">
+                                    {% translate "Terms and Conditions" %}
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+      
+                <div class="col-12 col-md-5 offset-md-1">
+                    <form>
+                        <h5>
+                            {% translate "Subscribe to our newsletter" %}
+                        </h5>
+                        <p>{% translate "Monthly digest of whats new and exciting from us." %}</p>
+                        <div class="d-flex w-100 gap-2">
+                            <label for="newsletter1" class="visually-hidden">
+                                {% translate "Email address" %}
+                            </label>
+                            <input id="newsletter1" type="text" class="form-control" 
+                                   placeholder="{% translate 'Email address'%}">
+                            <button class="btn btn-primary" type="button">
+                                {% translate "Subscribe" %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between py-2 my-1 border-top">
+                <p>© {% now "Y" %}
+                    <strong><span>{{ dcc.name|default_if_none:"Dance.Create.Connect" }}</span></strong> 
+                    {% translate "All Rights Reserved." %}
+                </p>
+                <ul class="list-unstyled d-flex">
+                    {% if dcc.twitter %}
+                    <li class="ms-3">
+                        <a class="link-dark" href="#">
+                            <i class="bx bxl-twitter"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if dcc.instagram %}
+                    <li class="ms-3">
+                        <a class="link-dark" href="#">
+                            <i class="bx bxl-instagram"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if dcc.facebook %}
+                    <li class="ms-3">
+                        <a class="link-dark" href="#">
+                            <i class="bx bxl-facebook-circle"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </footer>
+    </div>
+
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center active">
+        <i class="bi bi-arrow-up-short"></i>
+    </a>
+
+    <!-- Vendor JS Files -->
+    <script src="{% static "fw/jquery/jquery-3.6.3.min.js" %}"></script>
+    <script src="{% static "fw/NiceAdmin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js" %}"></script>
+
+    <!-- Template Main JS File -->
+    <script src="{% static "core/js/core.js" %}"></script>
+
+    <script text="javascript">
+        $(function() {
+            /*$(".dcc-msg-alert").fadeTo(2000, 500).slideUp(500, function() {
+                $(".dcc-msg-alert").slideUp(500);
+            });*/
+            if (document.querySelector('.dcc-msg-alert-wrapper')) {
+                document.querySelectorAll('.dcc-msg-alert').forEach(function($el) {
+                    setTimeout(() => {
+                        $el.classList.remove('show');
+                        $el.parentNode.classList.add("d-none");
+                    }, 2000);
+                });
+            }
+        });
+    </script>
+    {% block js_script %}
+    {% endblock %}
+    {% for tag in tags %}
+        {% if tag.placement == "footer" %}
+            {{ tag.script|safe }}
+        {% endif %}
+    {% endfor %}
+
+</body>
+
+</html>

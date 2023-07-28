@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-lg">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    {% translate "Send us your questions" %}
+                </h5>
+
+                <form class="row g-3">
+                    <div class="col-12">
+                        <label for="contact_form_name" class="form-label">
+                            {% translate "Your Name" %}
+                        </label>
+                        <input type="text" class="form-control" required
+                               aria-label="Your Name"
+                               id="contact_form_name" name="name">
+                    </div>
+                    <div class="col-12">
+                        <label for="contact_form_email" class="form-label">
+                            {% translate "Email" %}
+                        </label>
+                        <input type="email" class="form-control" required
+                               id="contact_form_email" name="email">
+                    </div>
+                    <div class="col-12">
+                        <label for="contact_form_msg" class="form-label">
+                            {% translate "Message" %}</label>
+                        <textarea class="form-control" id="contact_form_msg" required name="msg"></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="reset" class="btn btn-secondary">Reset</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

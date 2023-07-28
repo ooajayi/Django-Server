@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+
+<div class="">
+    <div class="row">
+        <div class="col-lg-7">
+            <div class="card">
+                <div class="card-body pt-2">
+                    <h5 class="card-title text-blue ">{% translate "Listings" %}</h5>
+
+                    <div id="dcc_listings_list_wrapper">
+                        <div hx-get="{% url 'core:c_listings' %}?page=1"
+                            hx-trigger="load">
+                            <div class="bg-transparent">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% include 'components/bottom_banner.html' %}
+        </div><!-- End Left side columns -->
+
+        <div class="col-lg-5">
+            <div class="card">
+                <div class="card-body pt-2">
+                    <h5 class="card-title">
+                        <i class="bi bi-filter-square-fill me-2"></i> {% trans "Filter" %}
+                    </h5>
+
+                    <div class="form-group row my-2" id="dcc_gender_filter">
+                        <div class="col">
+                            <label for="id_gender" class="col-form-label">
+                                {% translate "Applicant Gender" %}
+                            </label>
+                            <div hx-include="[name='gender'], [name='listing_type'], [name='age_range'], [name='loc_option'], [name='price_type']"
+                                 hx-trigger="change"
+                                 hx-target="#dcc_listings_list_wrapper"
+                                 hx-get="{% url 'core:c_listings' %}?page=1">
+                                <select class="form-control selectpicker"
+                                        data-title="{% translate 'Applicant Gender' %}"
+                                        name="gender" multiple id="id_gender">
+                                    {% for g in applicant_genders %}
+                                        <option value="{{ g.0 }}">{{ g.1 }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row mb-2" id="dcc_listing_type_filter">
+                        <div class="col">
+                            <label for="id_listing_type" class="col-form-label">
+                                {% translate "Listing Type(s)" %}
+                            </label>
+                            <div hx-include="[name='gender'], [name='listing_type'], [name='age_range'], [name='loc_option'], [name='price_type']"
+                                 hx-trigger="change"
+                                 hx-target="#dcc_listings_list_wrapper"
+                                 hx-get="{% url 'core:c_listings' %}?page=1">
+                                <select class="form-control selectpicker"
+                                        data-title="{% translate 'Listing Types' %}"
+                                        name="listing_type" multiple
+                                        id="id_listing_type">
+                                    {% for l_type in listing_types %}
+                                        <option value="{{ l_type.0 }}">
+                                            {{ l_type.1 }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row mb-2">
+                        <div class="col">
+                            <label for="id_age_range_filter" class="col-form-label">
+                                {% translate "Applicant age range" %}
+                            </label>
+                            <div hx-include="[name='gender'], [name='listing_type'], [name='age_range'], [name='loc_option'], [name='price_type']"
+                                 hx-trigger="change"
+                                 hx-target="#dcc_listings_list_wrapper"
+                                 hx-get="{% url 'core:c_listings' %}?page=1">
+                                {% for age in applicant_ages %}
+                                    <div class="form-check" id="id_listing_loc_filter">
+                                        <input class="form-check-input" type="checkbox" 
+                                                name="age_range" value="{{ age.0 }}">
+                                        <label class="form-check-label">
+                                        {{ age.1 }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col" id="dcc_listing_loc_filter">
+                            <label for="id_listing_loc_filter" class="col-form-label">
+                                {% translate "Location Type(s)" %}
+                            </label>
+                            <div hx-include="[name='gender'], [name='listing_type'], [name='age_range'], [name='loc_option'], [name='price_type']"
+                                 hx-trigger="change"
+                                 hx-target="#dcc_listings_list_wrapper"
+                                 hx-get="{% url 'core:c_listings' %}?page=1">
+                                {% for loc in loc_options %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" 
+                                                name="loc_option" value="{{ loc.0 }}">
+                                        <label class="form-check-label" for="id_listing_loc_filter">
+                                        {{ loc.1 }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-2">
+                        <div class="col">
+                            <label for="id_listing_comp_filter" class="col-form-label">
+                                {% translate "Compensation Type" %}
+                            </label>
+                            <div class="d-flex"
+                                 hx-include="[name='gender'], [name='listing_type'], [name='age_range'], [name='loc_option'], [name='price_type']"
+                                 hx-trigger="change"
+                                 hx-target="#dcc_listings_list_wrapper"
+                                 hx-get="{% url 'core:c_listings' %}?page=1">
+                            {% for comp in price_types %}
+                                <div class="form-check me-3">
+                                    <input class="form-check-input" type="checkbox" 
+                                           id="id_listing_comp_filter_{{ comp.0 }}"
+                                           name="price_type" value="{{ comp.0 }}">
+                                    <label class="form-check-label"
+                                           for="id_listing_comp_filter_{{ comp.0 }}">
+                                    {{ comp.1 }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

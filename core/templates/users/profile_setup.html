@@ -1,0 +1,294 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-lg">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    {% translate "Hey" %} {{ user.username }}, {% translate "finish setting up your profile!" %}
+                </h5>
+
+                {% if form.errors %}
+                <div id="form_errors" class="text-danger py-2">
+                    <div class="inner">
+                        <p>There were some errors in the information you entered. Please correct the following:</p>
+                        <ul>
+                            {% for field in form %}
+                                {% if field.errors %}<li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+
+                <form method="POST" action="{% url 'core:setup_profile' %}" autocomplete="off">
+                    {% csrf_token %}
+
+                    <div class="form-group row mb-3">
+                        <div class="col">
+                            <label class="col-form-label" for="profile_type">
+                                {% translate "I am a.." %}
+                                <span class="pl-1 text-danger">*</span>
+                            </label>
+                            <div class="col-sm-10">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" 
+                                           name="type" id="profile_type_dancer" 
+                                           value="dancer">
+                                    <label class="form-check-label" for="profile_type_dancer">
+                                        {% translate "Dancer" %}
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" 
+                                           name="type" id="profile_type_creator"
+                                           value="creator">
+                                    <label class="form-check-label" for="profile_type_creator">
+                                        {% translate "Creator" %}
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" 
+                                           name="type" id="profile_type_studio"
+                                           value="studio">
+                                    <label class="form-check-label" for="profile_type_studio">
+                                        {% translate "Studio" %}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label for="profile_bio" id="profile_bio_label"
+                               class="col-md-4 col-lg-3 col-form-label">
+                            {% translate "Tell us about yourself" %}
+                            <span class="pl-1 text-danger">*</span>
+                        </label>
+                        <div class="col-md-8 col-lg-9">
+                            <textarea name="bio" class="form-control" id="profile_bio"
+                                      style="height: 70px"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label for="profile_phone" class="col-md-4 col-lg-3 col-form-label">
+                            {% translate "Phone" %}
+                        </label>
+                        <div class="col-md-8 col-lg-9">
+                            <input name="phone" type="text" class="form-control" 
+                                   id="profile_phone"
+                                   placeholder="(436) 486-3538 x29071">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label for="profile_state" class="col-md-4 col-lg-3 col-form-label">
+                            {% translate "State" %}
+                            <span class="pl-1 text-danger">*</span>
+                        </label>
+                        <div class="col-md-8 col-lg-9">
+                            <input name="province" type="text" class="form-control"
+                                   id="profile_state" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <label for="profile_country" class="col-md-4 col-lg-3 col-form-label">
+                            {% translate "Country" %}
+                            <span class="pl-1 text-danger">*</span>
+                        </label>
+                        <div class="col-md-8 col-lg-9">
+                            <input name="country" type="text" class="form-control"
+                                   id="profile_country" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <label for="profile_genre" class="col-md-4 col-lg-3 col-form-label">
+                            {% translate "Genre" %}
+                            <span class="pl-1 text-danger">*</span>
+                        </label>
+                        <div class="col-md-8 col-lg-9">
+                            <select class="" id="profile_genres" 
+                                    multiple name="genres"
+                                    data-placeholder="{% translate 'Select desired genres' %}">
+                                {% for genre in genres %}
+                                    <option value="{{ genre.id }}">{{ genre.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <small class="form-text text-small text-muted d-none">
+                                {% blocktrans %}
+                                Start typing to search and click on preferred genre.
+                                {% endblocktrans %}
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="d-none" id="profile_dancer_form_elem_wrapper">
+                        <div class="row mb-3">
+                            <label for="profile_dob" class="col-md-4 col-lg-3 col-form-label">
+                                {% translate "Date of Birth" %}
+                            </label>
+                            <div class="col-md-8 col-lg-9">
+                                <input class="form-control" type="date" 
+                                       id="profile_dob" name="dob">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="profile_resume" class="col-md-4 col-lg-3 col-form-label">
+                                {% translate "Resume" %}
+                            </label>
+                            <div class="col-md-8 col-lg-9">
+                                <input class="form-control" type="file" 
+                                       id="profile_resume" name="resume">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-none" id="profile_studio_form_elem_wrapper">
+                        <div class="form-group row mb-2">
+                            <label class="col-md-4 col-lg-3 col-form-label" for="studio_display_name">
+                                {% translate "Studio Name" %}
+                                <span class="pl-1 text-danger">*</span>
+                            </label>
+                            <div class="col-md-8 col-lg-9">
+                                <input type="text" name="display_name"
+                                       class="form-control" id="studio_display_name"
+                                       aria-label="{% translate 'Studio name' %}"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label for="profile_facebook" class="col-md-4 col-lg-3 col-form-label">
+                            {% translate "Facebook Profile" %}
+                        </label>
+                        <div class="col-md-8 col-lg-9">
+                            <input name="facebook" type="text" class="form-control"
+                                   id="profile_facebook"
+                                   placeholder="https://facebook.com/#">
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <label for="profile_twitter" class="col-md-4 col-lg-3 col-form-label">
+                            {% translate "Twitter Profile" %}
+                        </label>
+                        <div class="col-md-8 col-lg-9">
+                            <input name="twitter" type="text" class="form-control" 
+                                   id="profile_twitter"
+                                   placeholder="https://twitter.com/#">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label for="profile_instagram" class="col-md-4 col-lg-3 col-form-label">
+                            {% translate "Instagram Profile" %}
+                        </label>
+                        <div class="col-md-8 col-lg-9">
+                            <input name="instagram" type="text" class="form-control"
+                                   id="profile_instagram"
+                                   placeholder="https://instagram.com/#">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label for="profile_website" class="col-md-4 col-lg-3 col-form-label">
+                            {% translate "Website" %}
+                        </label>
+                        <div class="col-md-8 col-lg-9">
+                            <input name="website" type="url" class="form-control"
+                                   id="profile_website"
+                                   placeholder="https://mywebsite.com/">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label for="profile_linkedin" class="col-md-4 col-lg-3 col-form-label">
+                            {% translate "Linkedin Profile" %}
+                        </label>
+                        <div class="col-md-8 col-lg-9">
+                            <input name="linkedin" type="text" class="form-control" 
+                                   id="profile_linkedin"
+                                   placeholder="https://linkedin.com/#">
+                        </div>
+                    </div>
+
+                    <div class="text-center my-3">
+                        <button type="submit" class="btn btn-success">
+                            {% translate "Save" %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block js_script %}
+
+<script>
+    $(document).ready(function() {
+        $('#profile_genres').selectize({
+            plugins: ["remove_button", "auto_position"],
+            maxItems: null,
+            valueField: 'id',
+            labelField: 'name',
+            searchField: 'name',
+            delimiter: ',',
+            create: function (input, callback) {
+                let term = $.trim(input);
+
+                if (!term.length || term.length < 3) return callback();
+
+                let genreId = -1,
+                    genreName = "",
+                    validGenre = false;
+
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'core:active_genres' %}",
+                    data: {
+                        'name': term,
+                        'slug': term.trim().replace(' ', '-'),
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function(data) {
+                        if (data.isValid) {
+                            callback({ value: data.id, text: input });
+                        }
+                    },
+                    error: function() {
+                        callback();
+                    },
+                });
+            }
+        });
+
+        $("input[name='type']").change(function() {
+            let selectedType = $(this).val();
+            
+            if (selectedType === "studio") {
+                $("#profile_studio_form_elem_wrapper").removeClass("d-none");
+                $("#profile_dancer_form_elem_wrapper").addClass("d-none");
+                $("#profile_bio_label").text("{% trans 'Tell us about the studio' %}");
+                $("#studio_display_name").prop("required", "required");
+            }
+            else {
+                $("#profile_studio_form_elem_wrapper").addClass("d-none");
+                $("#profile_dancer_form_elem_wrapper").removeClass("d-none");
+                $("#profile_bio_label").text("{% trans 'Tell us about yourself' %}");
+                $("#studio_display_name").removeProp("required");
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block css_styles %}
+<style>
+label .req {
+	margin: 2px;
+	color: red;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<script type="text/javascript">
+    window.location = '/';
+</script>
+
+{% else %}
+<div class="row">
+    <div class="col-lg">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Login</h5>
+
+                {% if form.errors %}
+                <div id="form_errors" class="col-12 text-danger py-2">
+                    <div class="inner">
+                        <p>There were some errors in the information you entered. Please try again.</p>
+                        <ul>
+                            {% for field in form %}
+                                {% if field.errors %}
+                                <li>{{ field.label }}: {{ field.errors|striptags }}</li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+
+                <form method="post" class="w-100 w-md-50" action="{% url 'login' %}" autocomplete="off">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <div class="col">
+                            <label for="login_username" class="col-form-label">
+                                Username<span class="pl-2 req">*</span>
+                            </label>
+                            <input type="text" id="login_username" required
+                                autocomplete="off" class="form-control" name="username">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col">
+                            <label for="login_pwd" class="col-form-label">
+                                Password<span class="pl-2 req">*</span>
+                            </label>
+                            <input id="login_pwd" type="password" required autocomplete="off"
+                                class="form-control" name="password">
+                        </div>
+                        
+                    </div>
+                    <div class="col text-center my-4">
+                        <button class="btn btn-purple" type="submit" value="login">Login</button>
+                        <p class="my-2"><a class="text-dark" href="{% url 'password_reset' %}">Forgot Password?</a></p>
+                        <p class="my-2">
+                            <a href="{% url 'core:signup' %}">Signup</a>
+                        </p>            
+                        <input type="hidden" name="next" value="{{ next }}">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

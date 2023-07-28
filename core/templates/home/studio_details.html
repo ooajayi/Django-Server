@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block css_styles %}
+    <link href="{% static "fw/Magnific-Popup/magnific-popup.css" %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title pb-1">{{ studio.name }}</h5>
+                    <hr>
+                    <div class="row g-0 my-4">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            {% if profile.profile_photo %}
+                            <img src="{{ studio.profile_photo.url }}"
+                                 alt="{% translate 'Profile Photo' %}"
+                                 class="img-fluid">
+                            {% else %}
+                            <img src="{% static "core/images/profile/male-default.jpg" %}"
+                                 alt="{% translate 'Profile Photo' %}"
+                                 class="img-fluid">
+                            {% endif %}
+                        </div>
+                        <div class="col-md-8 px-md-4">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="py-2">
+                                        <p>{{ studio.display_loc_str|linebreaks }}</p>
+                                        {% if studio.phone %}
+                                        <a href="tel:{{ studio.phone }}">
+                                            <i class="bi bi-telephone-fill pe-2"></i>{{ studio.phone }}
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                    <div class="social-links mt-2">
+                                        {% if studio.twitter %}
+                                        <a href="{{ studio.twitter }}" class="twitter" target="_blank">
+                                            <i class="bi bi-twitter"></i>
+                                        </a>
+                                        {% endif %}
+                                        {% if studio.facebook %}
+                                        <a href="#" class="facebook" target="_blank">
+                                            <i class="bi bi-facebook"></i>
+                                        </a>
+                                        {% endif %}
+                                        {% if studio.instagram %}
+                                        <a href="{{ studio.instagram }}" class="instagram" target="_blank">
+                                            <i class="bi bi-instagram"></i>
+                                        </a>
+                                        {% endif %}
+                                        {% if studio.linkedin %}
+                                        <a href="{{ studio.linkedin }}" class="linkedin" target="_blank">
+                                            <i class="bi bi-linkedin"></i>
+                                        </a>
+                                        {% endif %}
+                                        {% if studio.youtube %}
+                                        <a href="{{ studio.youtube }}" class="youtube text-danger" target="_blank"><i class="bi bi-youtube"></i></a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6" id="studio_genres_wrapper">
+                                    <div class="py-2">
+                                        <p class="fw-bold pb-0 text-brown">{% translate "GENRES" %}</p>
+                                        <div class="">
+                                        {% if studio.genres.count %}
+                                            {% for genre in studio.genres.all %}
+                                            <span class="badge bg-light text-dark mx-1">
+                                                <p class="mb-1">{{ genre.name }}</p>
+                                            </span>
+                                            {% endfor %}
+                                        {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row my-4">
+                        <div class="col">
+                            <h5 class="card-title py-0">{% translate "BIOGRAPHY" %}</h5>
+                            <p>{{ studio.bio|default_if_none:profile.bio }}</p>
+                        </div>
+                    </div>
+
+                    <div id="studio_calendar_wrapper" class="my-3">
+                        <div id="studio_calendar">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <h5 class="card-title py-0">{% translate "UPLOADS" %}</h5>
+                        </div>
+                        <div class="col-4 col-lg-2 my-2">
+                            <div class="magnific-img">
+                                <a class="image-popup-vertical-fit" href="https://unsplash.it/974/?random" title="9.jpg">
+                                    <img src="https://unsplash.it/974/?random" alt="9.jpg" class="img-fluid"/>
+                                    <i class="fa fa-search-plus" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-4 col-lg-2 my-2">
+                            <div class="magnific-img">
+                                <a class="image-popup-vertical-fit" href="https://unsplash.it/900/?random" title="10.jpg">
+                                    <img src="https://unsplash.it/900/?random" alt="10.jpg" class="img-fluid" />
+                                    <i class="fa fa-search-plus" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-4 col-lg-2 my-2">
+                            <div class="magnific-img">
+                                <a class="image-popup-vertical-fit" href="https://unsplash.it/902" title="3.jpg">
+                                    <img src="https://unsplash.it/902/" alt="3.jpg" class="img-fluid" />
+                                    <i class="fa fa-search-plus" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-4 col-lg-2 my-2">
+                            <div class="magnific-img">
+                                <a class="image-popup-vertical-fit" href="https://unsplash.it/901" title="4.jpg">
+                                    <img src="https://unsplash.it/901" alt="4.jpg" class="img-fluid" />
+                                    <i class="fa fa-search-plus" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-4 col-lg-2 my-2">
+                            <div class="magnific-img">
+                                <a class="image-popup-vertical-fit" href="https://unsplash.it/888/?random" title="1.jpg">
+                                    <img src="https://unsplash.it/888/?random" alt="1.jpg" class="img-fluid" />
+                                    <i class="fa fa-search-plus" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-4 col-lg-2 my-2">
+                            <div class="magnific-img">
+                                <a class="image-popup-vertical-fit" href="https://unsplash.it/931/?random" title="2.jpg">
+                                    <img src="https://unsplash.it/931/?random" alt="2.jpg" class="img-fluid" />
+                                    <i class="fa fa-search-plus" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-4 col-lg-2 my-2">
+                            <div class="magnific-img">
+                                <a class="image-popup-vertical-fit" href="https://unsplash.it/908/?random" title="5.jpg">
+                                    <img src="https://unsplash.it/908/?random" alt="5.jpg" class="img-fluid" />
+                                    <i class="fa fa-search-plus" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-4 col-lg-2 my-2">
+                            <div class="magnific-img">
+                                <a class="image-popup-vertical-fit" href="https://unsplash.it/978/?random" title="6.jpg">
+                                    <img src="https://unsplash.it/978/?random" alt="6.jpg" class="img-fluid" />
+                                    <i class="fa fa-search-plus" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-4 col-lg-2 my-2">
+                            <div class="magnific-img">
+                                <a class="image-popup-vertical-fit" href="https://unsplash.it/857/?random" title="7.jpg">
+                                    <img src="https://unsplash.it/857/?random" alt="7.jpg" class="img-fluid" />
+                                    <i class="fa fa-search-plus" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- End Left side columns -->
+
+        <!-- Right side columns -->
+        <div class="col-lg-4">
+            {% include 'components/right_sidebar.html' %}
+        </div><!-- End Right side columns -->
+    </div>
+</div>
+{% endblock %}
+
+
+{% block js_script %}
+
+<script src="{% static "fw/Magnific-Popup/magnific-popup.min.js" %}"></script>
+<script>
+    let studioCalendar;
+    $(document).ready(function() {
+        let calendarEl = document.getElementById('studio_calendar'),
+            initViewType = 'dayGridMonth';
+
+        if (isMobile())
+            initViewType = "dayGridWeek";
+
+        studioCalendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: initViewType,
+            eventSources: [
+                {
+                    url: "{% url 'core:list_studio_events' %}" + "?studio={{ studio.id }}",
+                    type: 'GET',
+                    success: function (data) {
+                        //console.log(data.events);
+                        return data.events;
+                    },
+                    error: function() {
+                        alert('there was an error while fetching events!');
+                    },
+                    // color: 'yellow',   // a non-ajax option
+                    // textColor: 'black' // a non-ajax option
+                }
+            ],
+            windowResize: function(arg) {
+                // console.log(arg);
+                if (isMobile())
+                    updateStudioCalendarView('listWeek');
+                else
+                    updateStudioCalendarView('dayGridMonth');
+            },
+            eventDidMount: function(info) {
+                let tooltip = new Tooltip(info.el, {
+                    title: info.event.extendedProps.description,
+                    placement: 'top',
+                    trigger: 'hover',
+                    container: 'body'
+                });
+            },
+            eventClick: function(info) {
+                calendarEventDetail(info.event.id);
+            }
+        });
+        studioCalendar.render();
+
+        $('.image-popup-vertical-fit').magnificPopup({
+            type: 'image',
+            mainClass: 'mfp-with-zoom', 
+            gallery: {
+                enabled: true
+            },
+            zoom: {
+                enabled: true,
+                duration: 300, // duration of the effect, in milliseconds
+                easing: 'ease-in-out', // CSS transition easing function
+                opener: function(openerElement) {
+                    return openerElement.is('img') ? openerElement : openerElement.find('img');
+                }
+            }
+        });
+    });
+
+    function updateStudioCalendarView(viewType) {
+        studioCalendar.changeView(viewType);
+    }
+
+    function calendarEventDetail(eventId) {
+
+    }
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+
+<div class="">
+    <div class="row">
+        <div class="col-lg-9">
+            <div class="card">
+                <div class="card-body pt-2">
+                    <h5 class="card-title text-blue ">{% translate "Forum Topics" %}</h5>
+
+                    <div id="dcc_topics_list_wrapper">
+                        <div hx-get="{% url 'core:c_topics' %}?page=1"
+                            hx-trigger="load">
+                            <div class="bg-transparent">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% include 'components/bottom_banner.html' %}
+        </div><!-- End Left side columns -->
+
+        <div class="col-lg-3">
+        </div>
+    </div>
+</div>
+{% endblock %}

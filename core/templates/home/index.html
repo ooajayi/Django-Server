@@ -1,0 +1,262 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+<div class="">
+    <div class="row">
+        {% if user.get_user_profile %}
+            <div class="col-lg-2">
+                {% include "components/profile/profile_card.html" with profile=user.get_user_profile %}
+            </div>
+            <div class="col-lg-7">
+                <div class="card">
+                    <div class="card-body pt-3">
+                        Highlight items/profiles/communication to include in home page
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-lg-9">
+                <div class="card">
+                    <div class="card-body pt-3">
+                        Highlight items/profiles/communication to include in home page
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <div class="col-lg-3">
+            {% include 'components/right_sidebar.html' %}
+        </div>
+    </div>
+</div>
+
+{# init layout #}
+<div class="d-none">
+    <div class="row">
+        <div class="col-lg-8">
+            <div>
+                <div class="card">
+                    <div class="card-body pt-3">
+                        <!-- Bordered Tabs -->
+                        <ul class="nav nav-tabs nav-tabs-bordered">
+                            <li class="nav-item flex-fill">
+                                <button class="nav-link active" data-bs-toggle="tab" 
+                                        data-bs-target="#home_list_tab">
+                                    {% translate "Home" %}
+                                </button>
+                            </li>
+                            <li class="nav-item flex-fill">
+                                <button class="nav-link" data-bs-toggle="tab" 
+                                        data-bs-target="#dancers_list_tab">
+                                    {% translate "Dancers" %}
+                                </button>
+                            </li>
+    
+                            <li class="nav-item flex-fill">
+                                <button class="nav-link" data-bs-toggle="tab" 
+                                        data-bs-target="#creators_list_tab">
+                                    {% translate "Creators" %}
+                                </button>
+                            </li>
+                            {% if profile.type != "studio" or profile.type != "studio_admin" %}
+                            <li class="nav-item flex-fill">
+                                <button class="nav-link" data-bs-toggle="tab"
+                                        data-bs-target="#studios_list_tab">
+                                    {% translate "Studios" %}
+                                </button>
+                            </li>
+                            {% endif %}
+                        </ul>
+                        <div class="tab-content pt-2">
+                            <div class="tab-pane fade show active" id="home_list_tab">
+                                <div class="row py-2 my-2">
+                                    <div class="d-grid my-2">
+                                        <button type="button" class="btn btn-onyx">
+                                            {% translate "Advertise with Us!" %}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="dancers_list_tab">
+                                <div class="row py-3">
+                                    <div class="col-12 mb-2">
+                                        <input name="dancer_srch" type="text" class="form-control my-2"
+                                               aria-label="{% translate 'Find a dancer' %}"
+                                               autocomplete="hidden" minlength="3"
+                                               placeholder="{% translate 'Find a dancer' %}"
+                                               hx-include="[name='dancer_genres'], [name='dancer_srch']"
+                                               hx-trigger="keyup changed delay:700ms, search" 
+                                               hx-target="#dcc_dancers_list_wrapper"
+                                               hx-get="{% url 'core:c_dancers' %}?page=1">
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex justify-content-betwee"
+                                             hx-include="[name='dancer_genres'], [name='dancer_srch']"
+                                             hx-trigger="change"
+                                             hx-target="#dcc_dancers_list_wrapper"
+                                             hx-get="{% url 'core:c_dancers' %}?page=1">
+                                            <div class="form-check me-3">
+                                                <input class="form-check-input" type="checkbox" 
+                                                       id="gridCheck1" name="dancer_genres" value="2">
+                                                <label class="form-check-label" for="gridCheck1">
+                                                    Hip Hop
+                                                </label>
+                                            </div>
+                                            <div class="form-check me-3">
+                                                <input class="form-check-input" type="checkbox" 
+                                                       id="gridCheck2" name="dancer_genres" value="1">
+                                                <label class="form-check-label" for="gridCheck2">
+                                                    Country
+                                                </label>
+                                            </div>
+                                            <div class="form-check me-3">
+                                                <input class="form-check-input" type="checkbox" 
+                                                       id="gridCheck3" name="dancer_genres" value="3">
+                                                <label class="form-check-label" for="gridCheck3">
+                                                    RnB
+                                                </label>
+                                            </div>
+                                            <div class="form-check me-3">
+                                                <input class="form-check-input" type="checkbox" 
+                                                       id="gridCheck4" name="dancer_genres" value="4">
+                                                <label class="form-check-label" for="gridCheck4">
+                                                    Tap
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="py-2 my-2" id="dcc_dancers_list_wrapper">
+                                    <div hx-get="{% url 'core:c_dancers' %}?page=1"
+                                         hx-trigger="load">
+                                        <div class="bg-transparent">&nbsp;</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="creators_list_tab">
+                                <div class="row d-flex py-3">
+                                    <div class="col-12 mb-1">
+                                        <input name="creator_srch" type="text" class="form-control my-2"
+                                            aria-label="{% translate 'Find a creator' %}"
+                                            autocomplete="hidden" minlength="3"
+                                            placeholder="{% translate 'Find a creator' %}"
+                                            hx-include="[name='creator_genres'], [name='creator_srch']"
+                                            hx-trigger="keyup changed delay:700ms, search" 
+                                            hx-target="#dcc_creators_list_wrapper"
+                                            hx-get="{% url 'core:c_creators' %}?page=1">
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex"
+                                             hx-include="[name='creator_genres'], [name='creator_srch']"
+                                             hx-trigger="change"
+                                             hx-target="#dcc_creators_list_wrapper"
+                                             hx-get="{% url 'core:c_creators' %}?page=1">
+                                            <div class="form-check me-3">
+                                                <input class="form-check-input" type="checkbox" 
+                                                       id="gridCheck1" name="creator_genres" value="2">
+                                                <label class="form-check-label" for="gridCheck1">
+                                                    Hip Hop
+                                                </label>
+                                            </div>
+                                            <div class="form-check me-3">
+                                                <input class="form-check-input" type="checkbox" 
+                                                       id="gridCheck2" name="creator_genres" value="1">
+                                                <label class="form-check-label" for="gridCheck2">
+                                                    Country
+                                                </label>
+                                            </div>
+                                            <div class="form-check me-3">
+                                                <input class="form-check-input" type="checkbox" 
+                                                       id="gridCheck3" name="creator_genres" value="3">
+                                                <label class="form-check-label" for="gridCheck3">
+                                                    RnB
+                                                </label>
+                                            </div>
+                                            <div class="form-check me-3">
+                                                <input class="form-check-input" type="checkbox" 
+                                                       id="gridCheck4" name="creator_genres" value="4">
+                                                <label class="form-check-label" for="gridCheck4">
+                                                    Tap
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="py-2 my-2" id="dcc_creators_list_wrapper">
+                                    <div hx-get="{% url 'core:c_creators' %}?page=1"
+                                         hx-trigger="load">
+                                        <div class="bg-transparent">&nbsp;</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="studios_list_tab">
+                                <div class="row py-3">
+                                    <div class="col-12 mb-1">
+                                        <input name="studio_srch" type="text" class="form-control my-2"
+                                               aria-label="{% translate 'Find a studio' %}"
+                                               autocomplete="hidden" minlength="3"
+                                               placeholder="{% translate 'Find a studio' %}"
+                                               hx-include="[name='studio_genres'], [name='studio_srch']"
+                                               hx-trigger="keyup changed delay:700ms, search" 
+                                               hx-target="#dcc_studios_list_wrapper"
+                                               hx-get="{% url 'core:c_studios' %}?page=1">
+                                    </div>
+                                    <div class="col">
+                                        <div class="d-flex"
+                                             hx-include="[name='studio_genres'], [name='studio_srch']"
+                                             hx-trigger="change"
+                                             hx-target="#dcc_studios_list_wrapper"
+                                             hx-get="{% url 'core:c_studios' %}?page=1">
+                                            <div class="form-check me-3">
+                                                <input class="form-check-input" type="checkbox" 
+                                                       id="gridCheck1" name="studio_genres" value="2">
+                                                <label class="form-check-label" for="gridCheck1">
+                                                    Hip Hop
+                                                </label>
+                                            </div>
+                                            <div class="form-check me-3">
+                                                <input class="form-check-input" type="checkbox" 
+                                                       id="gridCheck2" name="studio_genres" value="1">
+                                                <label class="form-check-label" for="gridCheck2">
+                                                    Country
+                                                </label>
+                                            </div>
+                                            <div class="form-check me-3">
+                                                <input class="form-check-input" type="checkbox" 
+                                                       id="gridCheck3" name="studio_genres" value="3">
+                                                <label class="form-check-label" for="gridCheck3">
+                                                    RnB
+                                                </label>
+                                            </div>
+                                            <div class="form-check me-3">
+                                                <input class="form-check-input" type="checkbox" 
+                                                       id="gridCheck4" name="studio_genres" value="4">
+                                                <label class="form-check-label" for="gridCheck4">
+                                                    Tap
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="py-2 my-2" id="dcc_studios_list_wrapper">
+                                    <div hx-get="{% url 'core:c_studios' %}?page=1"
+                                         hx-trigger="load">
+                                        <div class="bg-transparent">&nbsp;</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% include 'components/bottom_banner.html' %}
+            </div>
+        </div><!-- End Left side columns -->
+
+        <!-- Right side columns -->
+        <div class="col-lg-4">
+            {% include 'components/right_sidebar.html' %}
+        </div><!-- End Right side columns -->
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,298 @@
+{% extends "base.html" %}
+
+{% block css_styles %}
+<style>
+*, *:before, *:after {
+	box-sizing: border-box;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	background: #c1bdba;
+	font-family: 'Titillium Web', sans-serif;
+}
+a {
+	text-decoration: none;
+	color: #1ab188;
+	transition: 0.5s ease;
+}
+a:hover {
+	color: #179b77;
+}
+.form {
+	background: rgba(19, 35, 47, .9);
+	padding: 40px;
+	max-width: 700px;
+	border-radius: 4px;
+	box-shadow: 0 4px 10px 4px rgba(19, 35, 47, .3);
+}
+#login_reg_tabs {
+display:block;
+	border-bottom: none;
+	margin: 0 0 40px 0;
+}
+
+#login_reg_tabs li a {
+	display: block;
+	text-decoration: none;
+	padding: 15px;
+	background: rgba(160, 179, 176, .25);
+	color: #a0b3b0;
+	font-size: 20px;
+	float: left;
+	width: 50%;
+	text-align: center;
+	cursor: pointer;
+	transition: 0.5s ease;
+border:none;
+}
+#login_reg_tabs li a:hover {
+	background: #179b77;
+	color: #fff;
+}
+#login_reg_tabs li a.active  {
+	background: #1ab188 !important;
+	color: #fff;
+}
+
+h1 {
+	text-align: center;
+	color: #fff;
+	font-weight: 300;
+}
+.col-form-label{
+color:#179B04;
+}
+.form-control{
+color: #fff;
+font-weight: 500;
+background-color: rgba(19, 35, 47, .1);
+}
+label .req {
+	margin: 2px;
+	color:red;
+}
+input, textarea {
+	font-size: 22px;
+	display: block;
+	width: 100%;
+	height: 100%;
+	padding: 5px 10px;
+	background: none;
+	background-image: none;
+	border: 1px solid #a0b3b0;
+	color: #fff;
+	border-radius: 0;
+	transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+textarea {
+	border: 2px solid #a0b3b0;
+	resize: vertical;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row d-flex flex-column justfiy-content-center">
+  <!--{% if next %}
+      {% if user.is_authenticated %}
+          <p class="text-center">Your account doesn't have access to this page. To proceed,
+          please login with an account that has access.</p>
+      {% else %}
+          <p class="text-center">Please login to see this page.</p>
+      {% endif %}
+  {% endif %}-->
+<div class="form w-md-md-75 w-100 mx-md-auto">
+    <ul class="nav nav-tabs justify-content-center mb-2" id="login_reg_tabs">
+		<li class="nav-item tab">
+			<a class="nav-link active" id="sign_up_tab" data-toggle="tab"
+				href="#signup" role="tab" aria-controls="signup" aria-selected="true">Sign Up</a>
+		</li>
+		<li class="tab nav-item">
+			<a class="nav-link" href="#user_login" id="login_tab" data-toggle="tab" role="tab"
+				aria-controls="user_login" aria-selected="false">Log In</a>
+		</li>
+    </ul>
+
+    {% if form.errors %}
+    <!--<p class="mt-5 pt-2 text-center text-danger">
+		Your username and password didn't match. Please try again.
+	</p>-->
+	<div id="form_errors" class='text-danger pt-5'>
+		<div class="inner">
+			<p>There were some errors in the information you entered. Please correct the following:</p>
+			<ul>
+				{% for field in form %}
+					{% if field.errors %}<li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+    {% endif %}
+    
+    <div class="tab-content" id="login_tabs_content">
+    	<div class="tab-pane fade show active" id="signup" role="tabpanel"
+			aria-labelledby="sign_up_tab">
+			
+        	<h1 class="my-3">Sign Up To Get Started</h1>
+			<form method="post" action="{% url 'approvd:register' %}" autocomplete="off">
+				{% csrf_token %}
+				<div class="form-group row">
+					<div class="col-12 col-md-4">
+						<label class="col-form-label">
+							First Name<span class="req">*</span>
+						</label>
+						<input type="text" required autocomplete="off" name="first_name"
+							class="form-control"/>
+					</div>
+					<div class="col-12 col-md-4">
+						<label class="col-form-label">Middle Name</label>
+						<input type="text" autocomplete="off" name="middle_name"
+							class="form-control" />
+					</div>
+					<div class="col-12 col-md-4">
+						<label class="col-form-label">
+							Last Name<span class="req">*</span>
+						</label>
+						<input type="text" required autocomplete="off" name="last_name"
+							class="form-control" />
+					</div>
+				</div>
+				<div class="form-group row">
+					<div class="col">
+						<label class="col-form-label">
+							Username<span class="req">*</span>
+						</label>
+						<input type="text" required autocomplete="off" name="username"
+							class="form-control"/>
+					</div>
+					<div class="col">
+						<label class="col-form-label" for="id_user_type">
+							Account Type<span class="req">*</span>
+						</label>
+						<select class="form-control"
+							id="id_user_type" name="type">
+							<option value="client">Client</option>
+							<option value="broker">Broker</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group row">
+					<div class="col">
+						<label class="col-form-label">
+							Phone<span class="req">*</span>
+						</label>
+						<input type="text" autocomplete="off" name="phone" required
+							class="form-control" id="broker_phone_no" maxlength="24"/>
+					</div>
+					<div class="col d-none" id="broker_registration_extras">
+						<label class="col-form-label">
+							Brokerage<span class="req">*</span>
+						</label>
+						<input type="text" autocomplete="off" name="brokerage"
+							class="form-control" id="brokerage_id"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<div class="col">
+						<label class="col-form-label">
+							Email Address<span class="req">*</span>
+						</label>
+						<input type="email" required autocomplete="off" name="email"
+							class="form-control"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<div class="col">
+						<label class="col-form-label">
+							Password<span class="req">*</span>
+						</label>
+						<input type="password" required autocomplete="off" name="password1"
+							class="form-control"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<div class="col">
+						<label class="col-form-label">
+							Confirm Password<span class="req">*</span>
+						</label>
+						<input type="password" required autocomplete="off" name="password2"
+							class="form-control"/>
+					</div>
+				</div>
+				<h5 class="text-center text-white my-2">
+					By signing up, you agree to our
+					<a href="#" id="policy_link" download target="_blank">Privacy Policy</a> and 
+					<a href="#" id="tandc_link" download target="_blank">Terms of service</a>
+				</h5>
+				<button type="submit" class="btn btn-lg btn-block btn-success">Get Started</button>
+				<input type="hidden" name="next" value="{{ next }}">
+			</form>
+		</div>
+      	<div class="tab-pane fade" id="user_login" role="tabpanel"
+        	aria-labelledby="login_tab">
+			<br>
+			<h1 class="my-3">Login To Begin</h1>
+        
+			<form method="post" action="{% url 'login' %}">
+				{% csrf_token %}
+				<div class="form_group">
+					<label for="login_username" class="col-form-label">
+						Username<span class="pl-2 req">*</span>
+					</label>
+					<input type="text" id="login_username" required
+						autocomplete="off" class="form-control" name="username">
+				</div>
+				<div class="form-group">
+					<label for="login_pwd" class="col-form-label">
+						Password<span class="pl-2 req">*</span>
+					</label>
+					<input id="login_pwd" type="password" required autocomplete="off"
+						class="form-control" name="password">
+				</div>
+				<p class="text-center mt-2">
+					<a href="{% url 'password_reset' %}">Forgot Password?</a></p>
+				<button class="btn btn-lg btn-block btn-success" type="submit" value="login">Log In</button>
+			
+				<input type="hidden" name="next" value="{{ next }}">
+			</form>
+      	</div>
+      
+    </div><!-- tab-content -->
+</div> <!-- /form -->
+</div>
+
+{% endblock %}
+
+{% block js_script %}
+<script>
+	$(document).ready(function() {
+		$.ajax({
+			type:"GET",
+			url:"{% url 'approvd:get_account_legals' %}",
+			success: function(data){
+				if(data.isValid){
+					$('#tandc_link').attr('href', data.tandc);
+					$('#policy_link').attr('href', data.privacy);
+				} else{
+					$('#tandc_link').removeAttr('href');
+					$('#policy_link').removeAttr('href');
+				}
+			}
+		});
+
+		$('#id_user_type').change(function(event){
+			var clientType = $(this).val();
+
+			if(clientType == 'broker'){
+				$('#broker_registration_extras').removeClass('d-none');
+				$('#brokerage_id').attr('required', 'required');
+			} else{
+				$('#broker_registration_extras').addClass('d-none');
+				$('#brokerage_id').removeAttr('required');
+			}
+		});
+	});
+</script>
+{% endblock %}

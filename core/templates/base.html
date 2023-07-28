@@ -1,0 +1,426 @@
+{% load i18n %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Dance.Create.Connect</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    {% block extra_head %}
+    {% endblock %}
+
+    <!-- Favicons -->
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+
+    <!-- Vendor CSS Files -->
+    <link href="{% static "fw/NiceAdmin/assets/vendor/bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
+    <link href="{% static "fw/NiceAdmin/assets/vendor/bootstrap-icons/bootstrap-icons.css" %}" rel="stylesheet">
+    <link href="{% static "fw/NiceAdmin/assets/vendor/boxicons/css/boxicons.min.css" %}" rel="stylesheet">
+    <link href="{% static "fw/NiceAdmin/assets/vendor/quill/quill.snow.css" %}" rel="stylesheet">
+    <link href="{% static "fw/NiceAdmin/assets/vendor/quill/quill.bubble.css" %}" rel="stylesheet">
+    <link href="{% static "fw/NiceAdmin/assets/vendor/remixicon/remixicon.css" %}" rel="stylesheet">
+    <link href="{% static "fw/NiceAdmin/assets/vendor/simple-datatables/style.css" %}" rel="stylesheet">
+
+    <link href="{% static "fw/Selectize/selectize.default.min.css" %}" rel="stylesheet">
+    <link href="{% static "fw/bootstrap-select/bootstrap-select.min.css" %}" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="{% static "fw/NiceAdmin/assets/css/style.css" %}" rel="stylesheet">
+    <link href="{% static "core/css/core.css" %}" rel="stylesheet">
+    {% block css_styles %}
+    {% endblock %}
+</head>
+
+<body>
+    <!-- ======= Header ======= -->
+    <header id="header" class="header fixed-top d-flex align-items-center">
+
+        <div class="d-flex align-items-center justify-content-between">
+            <a href="/" class="logo d-flex align-items-center">
+                {% if dcc.def_logo %}
+                <img src="{{ dcc.def_logo.url }}" height="45" 
+                     alt="{% translate 'DCC logo' %}">
+                {% else %}
+                <img src="{% static "core/images/logo/DCC-Logo-Black.png" %}" 
+                     title="{% translate 'DCC logo' %}" alt="{% translate 'Application logo' %}"
+                     loading="lazy" height="45">
+                {% endif %}
+                <span class="d-none d-lg-block">Dance.Create.Connect</span>
+            </a>
+        </div><!-- End Logo -->
+
+        {% if request.user.is_authenticated %}
+        <div class="mx-auto search-bar">
+            <form class="search-form d-flex align-items-center" method="POST" action="#">
+                <input type="text" name="query" 
+                       placeholder="{% translate 'Search' %}" 
+                       title="{% translate 'Enter search keyword' %}">
+                <button type="submit" title="Search">
+                    <i class="bi bi-search"></i>
+                </button>
+            </form>
+        </div><!-- End Search Bar -->
+
+        <nav class="header-nav ms-auto">
+            <ul class="d-flex align-items-center">
+
+                <li class="nav-item d-block d-lg-none">
+                    <a class="nav-link nav-icon search-bar-toggle " href="#">
+                        <i class="bi bi-search"></i>
+                    </a>
+                </li><!-- End Search Icon-->
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-bell"></i>
+                        <span class="badge bg-primary badge-number">4</span>
+                    </a><!-- End Notification Icon -->
+
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+                        <li class="dropdown-header">
+                            You have 4 new notifications
+                            <a href="#">
+                                <span class="badge rounded-pill bg-primary p-2 ms-2">View all</span>
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li class="notification-item">
+                            <i class="bi bi-exclamation-circle text-warning"></i>
+                            <div>
+                                <h4>Lorem Ipsum</h4>
+                                <p>Quae dolorem earum veritatis oditseno</p>
+                                <p>30 min. ago</p>
+                            </div>
+                        </li>
+
+                        <li>
+                        <hr class="dropdown-divider">
+                        </li>
+                        <li class="dropdown-footer">
+                        <a href="#">Show all notifications</a>
+                        </li>
+
+                    </ul><!-- End Notification Dropdown Items -->
+                </li><!-- End Notification Nav -->
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-chat-left-text"></i>
+                        <span class="badge bg-success badge-number">3</span>
+                    </a><!-- End Messages Icon -->
+
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
+                        <li class="dropdown-header">
+                            You have 3 new messages
+                            <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li class="message-item">
+                            <a href="#">
+                                <img src="assets/img/messages-1.jpg" alt="" class="rounded-circle">
+                                <div>
+                                <h4>Maria Hudson</h4>
+                                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
+                                <p>4 hrs. ago</p>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li class="dropdown-footer">
+                        <a href="#">Show all messages</a>
+                        </li>
+                    </ul><!-- End Messages Dropdown Items -->
+
+                </li><!-- End Messages Nav -->
+
+                <li class="nav-item dropdown pe-3">
+                    <a class="nav-link nav-profile d-flex align-items-center pe-0"
+                       href="#" data-bs-toggle="dropdown">
+                        {% if profile.profile_photo %}
+                        <img src="{{ profile.profile_photo.url }}"
+                             alt="{% translate 'Profile' %}" class="rounded-circle">
+                        {% endif %}
+                        <span class="d-none d-md-block dropdown-toggle ps-2">
+                            {{ user.get_user_profile.full_name }}
+                        </span>
+                    </a><!-- End Profile Iamge Icon -->
+
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+                        <li class="dropdown-header">
+                            <h6>{{ user.get_user_profile.full_name }}</h6>
+                            <span>{{ user.username }}</span>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" 
+                               href="{% url 'core:listings' %}">
+                                <i class="bi bi-megaphone"></i>
+                                <span>{% translate "Listings" %}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        {% if user.get_user_profile and user.get_user_profile.type == "studio" %}
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" 
+                               href="{% url 'core:my_studio' %}">
+                                <i class="bi bi-building"></i>
+                                <span>{% translate "My Studio" %}</span>
+                            </a>
+                        </li>
+                        {% else %}
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" 
+                               href="{% url 'core:my_profile' %}">
+                                <i class="bi bi-person"></i>
+                                <span>{% translate "My Profile" %}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" 
+                               href="{% url 'core:my_profile' %}">
+                                <i class="bi bi-gear"></i>
+                                <span>{% translate 'Account Settings' %}</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center"
+                               href="{% url 'core:contact' %}">
+                                <i class="bi bi-question-circle"></i>
+                                <span>{% translate 'Need Help?' %}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li class="dcc-cursor">
+                            <a class="dropdown-item d-flex align-items-center"
+                               onClick="document.getElementById('dcc_logout_form').submit()">
+                                <i class="bi bi-box-arrow-right"></i>
+                                <span>{% translate 'Sign Out' %}</span>
+                            </a>
+                        </li>
+                        
+                        <form method="post" action="{% url 'account_logout' %}" id="dcc_logout_form">
+                            {% csrf_token %}
+                            {% if redirect_field_value %}
+                            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                            {% endif %}
+                        </form>
+                    </ul><!-- End Profile Dropdown Items -->
+                </li><!-- End Profile Nav -->
+
+            </ul>
+        </nav><!-- End Icons Navigation -->
+        {% else %}
+        <nav class="header-nav ms-auto">
+            <ul class="d-flex align-items-center">
+
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="{% url 'account_login' %}">
+                        {% translate "Login / Register" %}
+                    </a>
+                </li>
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="{% url 'core:contact' %}">
+                        {% translate "Contact" %}
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+    </header><!-- End Header -->
+
+    <main id="main" class="main">
+
+        <div class="pagetitle d-none">
+            <h1>Dashboard</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </nav>
+        </div><!-- End Page Title -->
+
+        {% include 'components/messages.html' %}
+        <div class="alert sticky-top d-none" role="alert" id="dcc_msg_alert">
+            <div id="dcc_msg_alert_content">
+                <h5 class="alert-heading"></h5>
+                <p id="msg_body"></p>
+            </div>
+        </div>
+
+        <section class="section dashboard mt-2">
+            {% block banner %}
+            {% endblock %}
+
+            {% block content %}
+            {% endblock %}
+            <div class="row">
+
+                <!-- Left side columns -->
+                <div class="col-lg-8">
+                    <div>
+
+                        <!-- News & Updates Traffic -->
+                        {% comment %}
+                            <div class="card">
+                            <div class="filter">
+                                <a class="icon" href="#" data-bs-toggle="dropdown">
+                                    <i class="bi bi-three-dots"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                    <li class="dropdown-header text-start">
+                                        <h6>Filter</h6>
+                                    </li>
+
+                                    <li><a class="dropdown-item" href="#">Today</a></li>
+                                    <li><a class="dropdown-item" href="#">This Month</a></li>
+                                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                                </ul>
+                            </div>
+
+                            <div class="card-body pb-0">
+                                <h5 class="card-title">News &amp; Updates <span>| Today</span></h5>
+
+                                <div class="news">
+                                    <div class="post-item clearfix">
+                                        <img src="assets/img/news-1.jpg" alt="">
+                                        <h4><a href="#">Nihil blanditiis at in nihil autem</a></h4>
+                                        <p>Sit recusandae non aspernatur laboriosam. Quia enim eligendi sed ut harum...</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div><!-- End News & Updates -->
+                        {% endcomment %}
+                    </div>
+                </div><!-- End Left side columns -->
+
+                <!-- Right side columns -->
+                <div class="col-lg-4">
+
+                </div><!-- End Right side columns -->
+            </div>
+        </section>
+
+    </main><!-- End #main -->
+
+    {% block extra_body %}
+    {% endblock %}
+
+    <!-- Vendor JS Files -->
+    <script src="{% static "fw/jquery/jquery-3.6.3.min.js" %}"></script>
+
+    <script src="{% static "fw/NiceAdmin/assets/vendor/apexcharts/apexcharts.min.js" %}"></script>
+    <script src="{% static "fw/NiceAdmin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js" %}"></script>
+    <script src="{% static "fw/NiceAdmin/assets/vendor/chart.js/chart.umd.js" %}"></script>
+    <script src="{% static "fw/NiceAdmin/assets/vendor/echarts/echarts.min.js" %}"></script>
+    <script src="{% static "fw/NiceAdmin/assets/vendor/quill/quill.min.js" %}"></script>
+    <script src="{% static "fw/NiceAdmin/assets/vendor/simple-datatables/simple-datatables.js" %}"></script>
+    <script src="{% static "fw/NiceAdmin/assets/vendor/tinymce/tinymce.min.js" %}"></script>
+
+    <script src="{% static "fw/Selectize/selectize.min.js" %}"></script>
+    <script src="{% static "fw/fullcalendar-6.1.4/dist/index.global.min.js" %}"></script>
+    <script src="{% static "fw/Tooltip/tooltip.min.js" %}"></script>
+    <script src="{% static "fw/htmx/htmx.min.js" %}"></script>
+    <script src="{% static "fw/bootstrap-select/bootstrap-select.min.js" %}"></script>
+
+    <!-- Template Main JS File -->
+    <script src="{% static "fw/NiceAdmin/assets/js/main.js" %}"></script>
+    <script src="{% static "core/js/core.js" %}"></script>
+    <script src="{% static "core/js/sidebar.js" %}" text="javascript"></script>
+
+    <script text="javascript">
+        $(function() {
+            /*$(".dcc-msg-alert").fadeTo(2000, 500).slideUp(500, function() {
+                $(".dcc-msg-alert").slideUp(500);
+            });*/
+            if (document.querySelector('.dcc-msg-alert-wrapper')) {
+                document.querySelectorAll('.dcc-msg-alert').forEach(function($el) {
+                    setTimeout(() => {
+                        $el.classList.remove('show');
+                        $el.parentNode.classList.add("d-none");
+                    }, 2000);
+                });
+            }
+
+            document.body.addEventListener('htmx:beforeSwap', function(evt) {console.log(evt);
+                if(evt.detail.xhr.status === 404){
+                    // alert the user when a 404 occurs (maybe use a nicer mechanism than alert())
+                    alert("Error: Could Not Find Resource");
+                } else if(evt.detail.xhr.status === 422){
+                    // allow 422 responses to swap as we are using this as a signal that
+                    // a form was submitted with bad data and want to rerender with the
+                    // errors
+                    //
+                    // set isError to false to avoid error logging in console
+                    evt.detail.shouldSwap = true;
+                    evt.detail.isError = false;
+                } else if(evt.detail.xhr.status === 418){
+                    // if the response code 418 (I'm a teapot) is returned, retarget the
+                    // content of the response to the element with the id `teapot`
+                    evt.detail.shouldSwap = true;        
+                    evt.detail.target = htmx.find("#teapot");
+                }
+            });
+
+            document.body.addEventListener('htmx:afterRequest', function (evt) { console.log(evt)
+                const targetError = evt.target.attributes.getNamedItem('hx-target-error')
+                if (evt.detail.failed && targetError) {
+                  document.getElementById(targetError.value).style.display = "inline";
+                }
+            });
+            document.body.addEventListener('htmx:beforeRequest', function (evt) {
+                const targetError = evt.target.attributes.getNamedItem('hx-target-error')
+                if (targetError) {
+                  document.getElementById(targetError.value).style.display = "none";
+                }
+            });
+        });
+    </script>
+    {% block js_script %}
+    {% endblock %}
+    {% for tag in tags %}
+        {% if tag.placement == "footer" %}
+            {{ tag.script|safe }}
+        {% endif %}
+    {% endfor %}
+
+</body>
+
+</html>

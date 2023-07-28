@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block css_styles %}
+    <link href="{% static "fw/Magnific-Popup/magnific-popup.css" %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="">
+    <div class="row">
+        <div class="col-lg-9">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title pb-1">{% translate "Events Calendar" %}</h5>
+                    <hr>
+
+                    <div id="events_calendar_wrapper" class="my-3">
+                        <div id="events_calendar">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            Insert ads sidebar here
+        </div>
+    </div>
+{% endblock %}
+
+{% block js_script %}
+
+<script src="{% static "fw/Magnific-Popup/magnific-popup.min.js" %}"></script>
+<script>
+    let eventCalendar;
+    $(document).ready(function() {
+        let calendarEl = document.getElementById('events_calendar'),
+            initViewType = 'dayGridWeek';
+
+        initViewType = 'dayGridMonth';
+        if (isMobile())
+            initViewType = "dayGridWeek";
+
+        eventCalendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: initViewType,
+            eventSources: [
+                {
+                    url: "{% url 'core:list_events' %}",
+                    type: 'GET',
+                    success: function (data) {
+                        //console.log(data.events);
+                        return data.events;
+                    },
+                    error: function() {
+                        alert('there was an error while fetching events!');
+                    },
+                    // color: 'yellow',   // a non-ajax option
+                    // textColor: 'black' // a non-ajax option
+                },
+                {
+                    url: "{% url 'core:list_all_studio_events' %}",
+                    type: 'GET',
+                    success: function (data) {
+                        return data.events;
+                    },
+                    error: function() {
+                        alert('there was an error while fetching events!');
+                    },
+                }
+            ],
+            windowResize: function(arg) {
+                if (isMobile())
+                    updateeventCalendarView('listWeek');
+                else
+                    updateeventCalendarView('dayGridMonth');
+            },
+            eventDidMount: function(info) {
+                let tooltip = new Tooltip(info.el, {
+                    title: info.event.extendedProps.description,
+                    placement: 'top',
+                    trigger: 'hover',
+                    container: 'body'
+                });
+            },
+            eventClick: function(info) {
+                calendarEventDetail(info.event.id);
+            }
+        });
+        eventCalendar.render();
+
+        $('.image-popup-vertical-fit').magnificPopup({
+            type: 'image',
+            mainClass: 'mfp-with-zoom', 
+            gallery: {
+                enabled: true
+            },
+            zoom: {
+                enabled: true,
+                duration: 300, // duration of the effect, in milliseconds
+                easing: 'ease-in-out', // CSS transition easing function
+                opener: function(openerElement) {
+                    return openerElement.is('img') ? openerElement : openerElement.find('img');
+                }
+            }
+        });
+    });
+
+    function updateeventCalendarView(viewType) {
+        eventCalendar.changeView(viewType);
+    }
+
+    function calendarEventDetail(eventId) {
+
+    }
+
+</script>
+
+{% endblock %}

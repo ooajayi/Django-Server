@@ -1,0 +1,57 @@
+{% load static %}
+{% load i18n %}
+
+<div class="row py-2 my-2" id="">
+    {% for dancer in dancers %}
+    <div class="col-md-4 col-lg-3 col-xl-4">
+        <a href="/profile/{{ dancer.user.username}}/"
+            class="dcc-hp-profile-card-btn text-dark">
+            <div class="card dcc-hp-profile-cards">
+                {% if dancer.profile_photo %}
+                <img src="{{ dancer.profile_photo.url }}"
+                    alt="{% translate 'Profile Photo' %}"
+                    class="rounded-circle card-img-top">
+                {% else %}
+                <img src="{% static "core/images/profile/male-default.jpg" %}"
+                    alt="{% translate 'Profile Photo' %}"
+                    class="card-img-top">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ dancer.display_name }}</h5>
+                    <p class="card-text">{{ dancer.bio }}</p>
+                    {% if dancer.display_loc_str %}
+                    <p class="card-text">
+                        {{ dancer.display_loc_str|linebreaks }}
+                    </p>
+                    {% endif %}
+                    {% if dancer.dob %}
+                    <small class="card-text font-italic">
+                        {{ dancer.calculate_age}} {% translate "yrs old" %}
+                    </small>
+                    {% endif %}
+                    <!-- Add genres/interests here -->
+                    <div class="row my-2 text-truncate">
+                        <div class="col px-0">
+                            <div class="my-2">
+                            {% if dancer.genres.count %}
+                                {% for genre in dancer.genres.all %}
+                                <span class="badge bg-light text-dark mx-1">{{ genre.name }}</span>
+                                {% endfor %}
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+
+{% if dancers.has_next %}
+<div hx-get="{% url 'core:c_dancers' %}?page={{ page|add:1 }}"
+    hx-trigger="revealed" 
+    hx-swap="afterend"
+    hx-include="[name='dancer_srch'], [name='dancer_genres']">
+</div>
+{% endif %}

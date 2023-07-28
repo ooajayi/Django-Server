@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-lg">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    {% translate "Sign up to connect with top dancers in the world" %}
+                </h5>
+        
+                <form method="post" action="{% url 'core:signup' %}" autocomplete="off">
+                    {% csrf_token %}
+                    <input type="hidden" name="type" value="studio"
+                        aria-label="{% translate 'User Type' %}">
+
+                    <div class="form-group row mb-2">
+                        <div class="col">
+                            <label class="col-form-label" for="studio_display_name">
+                                {% translate "Studio Name" %}
+                                <span class="pl-1 text-danger">*</span>
+                            </label>
+                            <input type="text" required name="display_name"
+                                   class="form-control" id="studio_display_name"
+                                   aria-label="{% translate 'Studio name' %}"/>
+                        </div>
+                    </div>
+                    <div class="form-group row mb-2">
+                        <div class="col">
+                            <label class="col-form-label" for="studio_name">
+                                {% translate "Your Studio Username" %}
+                                <span class="pl-1 text-danger">*</span>
+                            </label>
+                            <input type="text" required name="username"
+                                   class="form-control" id="studio_username"
+                                   aria-label="{% translate 'Your studio username' %}"/>
+                        </div>
+                    </div>
+                    <div class="form-group row mb-2">
+                        <div class="col">
+                            <label class="col-form-label" for="studio_password1">
+                                {% translate "Password" %}
+                                <span class="pl-1 text-danger">*</span>
+                            </label>
+                            <input type="password" id="studio_password1" autocomplete="off" 
+                                   name="password1" required class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="form-group row mb-2">
+                        <div class="col">
+                            <label class="col-form-label" for="studio_password2">
+                                {% translate "Confirm Password" %}
+                                <span class="pl-1 text-danger">*</span>
+                            </label>
+                            <input type="password" id="studio_password2" autocomplete="off"
+                                   name="password2" required class="form-control"/>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4" id="studio_admin_info_wrapper">
+                        <div class="col-12">
+                            <h6>{% translate "Administrator Information" %}</h6>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-2">
+                        <div class="col-12 col-md-6">
+                            <label class="col-form-label" for="studio_first_name">
+                                {% translate "First Name" %}
+                                <span class="pl-1 text-danger">*</span>
+                            </label>
+                            <input type="text" required autocomplete="off" 
+                                   name="first_name" id="studio_first_name"
+                                   class="form-control"/>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="col-form-label" for="dancer_last_name">
+                                {% translate "Last Name" %}
+                                <span class="pl-1 text-danger">*</span>
+                            </label>
+                            <input type="text" required autocomplete="off" 
+                                   name="last_name" class="form-control" 
+                                   id="dancer_last_name"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-2">
+                        <div class="col-12">
+                            <label class="col-form-label" for="studio_email">
+                                {% translate "Email" %}
+                                <span class="pl-1 text-danger">*</span>
+                            </label>
+                            <input type="email" required autocomplete="off" name="email"
+                                   class="form-control" id="studio_email"/>
+                        </div>
+                    </div>
+
+                    {% if dcc and dcc.tandc or dcc.policy %}
+                    <div class="">
+                        <p class="my-3">
+                            By signing up, you agree to our
+                            {% if dcc.policy %}
+                                <a href="{{ client.policy.url }}" download target="_blank"
+                                   id="policy_link">{% translate "Privacy Policy" %}</a> {% translate "and " %}
+                            {% endif %}
+                            {% if client.tandc %}
+                            <a href="{{ client.tandc.url }}" id="tandc_link" 
+                               download target="_blank">{% translate "Terms and Conditions" %}</a>
+                            {% endif %}
+                        </p>
+                    </div>
+                    {% endif %}
+                    <button type="submit" class="btn btn-secondary my-3">Get Started</button>
+                    <input type="hidden" name="next" value="{{ next }}">
+                </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

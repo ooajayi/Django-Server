@@ -1,0 +1,24 @@
+{% load i18n %}
+{% load static %}
+
+{% if bottom_body_banners %}
+<div id="dcc_home_bottom_banners" class="my-3">
+    <div id="dcc_home_bottom_banners_carousel" class="carousel slide"
+         data-bs-ride="carousel" data-bs-touch="false">
+        <div class="carousel-inner">
+            {% for img_ad in bottom_body_banners %}
+            <div class="carousel-item {% if forloop.first %} active{% endif %}">
+                <img src="{{ img_ad.image.url }}"
+                        class="d-block w-100" alt="{{ img_ad.name }}">
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if bottom_body_banners %}
+    {% for bottom_ad in bottom_body_ads %}
+        {{ bottom_ad|safe }}
+    {% endfor %}
+{% endif %}

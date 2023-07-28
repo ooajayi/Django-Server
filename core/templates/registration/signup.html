@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container d-flex justify-content-center my-3 my-md-5">
+    <div class="row">
+        <div class="col-12 my-3">
+            <h4 class="text-center text-purple font-weight-bold">
+                Sign up to get started!
+            </h4>
+        </div>
+
+        {% if form.errors %}
+        <div id="form_errors" class="text-danger py-2">
+            <div class="inner">
+                <p>There were some errors in the information you entered. Please correct the following:</p>
+                <ul>
+                    {% for field in form %}
+                        {% if field.errors %}<li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="col-12 justify-content-center mb-4">
+        <form method="post" action="{% url 'core:signup' %}" autocomplete="off">
+            {% csrf_token %}
+            <div class="form-group row">
+                <div class="col-12 col-md-4">
+                    <label class="col-form-label">
+                        First Name<span class="pl-1 text-danger">*</span>
+                    </label>
+                    <input type="text" required autocomplete="off" name="first_name"
+                        class="form-control"/>
+                </div>
+                <div class="col-12 col-md-4">
+                    <label class="col-form-label">Middle Name</label>
+                    <input type="text" autocomplete="off" name="middle_name"
+                        class="form-control" />
+                </div>
+                <div class="col-12 col-md-4">
+                    <label class="col-form-label">
+                        Last Name<span class="pl-1 text-danger">*</span>
+                    </label>
+                    <input type="text" required autocomplete="off" name="last_name"
+                        class="form-control" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col">
+                    <label class="col-form-label">
+                        Username<span class="pl-1 text-danger">*</span>
+                    </label>
+                    <input type="text" required autocomplete="off" name="username"
+                        class="form-control"/>
+                </div>
+                <div class="col">
+                    <label class="col-form-label" for="id_user_type">
+                        Account Type<span class="pl-1 text-danger">*</span>
+                    </label>
+                    <select class="form-control"
+                        id="id_user_type" name="type">
+                        <option value="client">Client</option>
+                        <option value="broker">Broker</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col">
+                    <label class="col-form-label">
+                        Phone<span class="pl-1 text-danger">*</span>
+                    </label>
+                    <input type="text" autocomplete="off" name="phone" required
+                        class="form-control" id="broker_phone_no" maxlength="24"/>
+                </div>
+                <div class="col d-none" id="broker_registration_extras">
+                    <label class="col-form-label">
+                        Brokerage<span class="req">*</span>
+                    </label>
+                    <input type="text" autocomplete="off" name="brokerage"
+                        class="form-control" id="brokerage_id"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col">
+                    <label class="col-form-label">
+                        Email Address<span class="pl-1 text-danger">*</span>
+                    </label>
+                    <input type="email" required autocomplete="off" name="email"
+                        class="form-control"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col">
+                    <label class="col-form-label">
+                        Password<span class="pl-1 text-danger">*</span>
+                    </label>
+                    <input type="password" required autocomplete="off" name="password1"
+                        class="form-control"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col">
+                    <label class="col-form-label">
+                        Confirm Password<span class="pl-1 text-danger">*</span>
+                    </label>
+                    <input type="password" required autocomplete="off" name="password2"
+                        class="form-control"/>
+                </div>
+            </div>
+            {% if client and client.tandc or client.policy %}
+            <p class="my-3">
+                By signing up, you agree to our
+                {% if client.policy %}
+                <a href="{{ client.policy.url }}" id="policy_link" download target="_blank">Privacy Policy</a> and 
+                {% endif %}
+                {% if client.tandc %}
+                <a href="{{ client.tandc.url }}" id="tandc_link" download target="_blank">Terms and Conditions</a>
+                {% endif %}
+            </p>
+            {% endif %}
+            <button type="submit" class="btn btn-purple">Get Started</button>
+            <input type="hidden" name="next" value="{{ next }}">
+        </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js_script %}
+<script>
+	$(document).ready(function() {
+		$('#id_user_type').change(function(event){
+			var clientType = $(this).val();
+
+			if(clientType == 'broker'){
+				$('#broker_registration_extras').removeClass('d-none');
+				$('#brokerage_id').attr('required', 'required');
+			} else{
+				$('#broker_registration_extras').addClass('d-none');
+				$('#brokerage_id').removeAttr('required');
+			}
+		});
+	});
+</script>
+{% endblock %}

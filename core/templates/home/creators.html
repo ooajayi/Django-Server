@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+<div class="">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row py-3">
+                        <div class="col-12">
+                            <h4 class="card-title pb-1">{% translate "Creators" %}</h5>
+                            <hr>        
+                        </div>
+                        <div class="col-12 col-lg-7 my-1">
+                            <input name="srch" type="text" class="form-control"
+                                aria-label="{% translate 'Find a creator' %}"
+                                autocomplete="hidden" minlength="3"
+                                placeholder="{% translate 'Find a creator' %}"
+                                hx-include="[name='genres'], [name='srch'], [name='location']"
+                                hx-trigger="keyup changed delay:700ms, search" 
+                                hx-target="#dcc_creators_list_wrapper"
+                                hx-get="{% url 'core:c_creators' %}?page=1">
+                        </div>
+                        <div class="col-12 col-lg-5 my-1">
+                            <input name="location" type="text" class="form-control"
+                                   aria-label="{% translate 'Search by Location...' %}"
+                                   autocomplete="hidden" minlength="3"
+                                   placeholder="{% translate 'Search by Location...' %}"
+                                   hx-include="[name='genres'], [name='srch'], [name='location']"
+                                   hx-trigger="keyup changed delay:700ms, search" 
+                                   hx-target="#dcc_creators_list_wrapper"
+                                   hx-get="{% url 'core:c_creators' %}?page=1">
+                        </div>
+                    </div>
+                    <div class="row my-2">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-betwee"
+                                hx-include="[name='genres'], [name='srch'], [name='location']"
+                                hx-trigger="change"
+                                hx-target="#dcc_creators_list_wrapper"
+                                hx-get="{% url 'core:c_creators' %}?page=1">
+                                <div class="form-check me-3">
+                                    <input class="form-check-input" type="checkbox" 
+                                        id="gridCheck1" name="genres" value="2">
+                                    <label class="form-check-label" for="gridCheck1">
+                                        Hip Hop
+                                    </label>
+                                </div>
+                                <div class="form-check me-3">
+                                    <input class="form-check-input" type="checkbox" 
+                                        id="gridCheck2" name="genres" value="1">
+                                    <label class="form-check-label" for="gridCheck2">
+                                        Country
+                                    </label>
+                                </div>
+                                <div class="form-check me-3">
+                                    <input class="form-check-input" type="checkbox" 
+                                        id="gridCheck3" name="genres" value="3">
+                                    <label class="form-check-label" for="gridCheck3">
+                                        RnB
+                                    </label>
+                                </div>
+                                <div class="form-check me-3">
+                                    <input class="form-check-input" type="checkbox" 
+                                        id="gridCheck4" name="genres" value="4">
+                                    <label class="form-check-label" for="gridCheck4">
+                                        Tap
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="py-2 my-2" id="dcc_creators_list_wrapper">
+                        <div hx-get="{% url 'core:c_creators' %}?page=1"
+                             hx-trigger="load">
+                            <div class="bg-transparent">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            {% include 'components/right_sidebar.html' %}
+        </div>
+    </div>
+</div>
+{% endblock %}

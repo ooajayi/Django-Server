@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+<div class="">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row py-3">
+                        <div class="col-12">
+                            <h4 class="card-title pb-1">{% translate "Dancers" %}</h5>
+                            <hr>        
+                        </div>
+                        <div class="col-12 col-lg-7 my-1">
+                            <input name="dancer_srch" type="text" class="form-control"
+                                aria-label="{% translate 'Find a dancer' %}"
+                                autocomplete="hidden" minlength="3"
+                                placeholder="{% translate 'Find a dancer' %}"
+                                hx-include="[name='dancer_genres'], [name='dancer_srch']"
+                                hx-trigger="keyup changed delay:700ms, search" 
+                                hx-target="#dcc_dancers_list_wrapper"
+                                hx-get="{% url 'core:c_dancers' %}?page=1">
+                        </div>
+                        <div class="col-12 col-lg-5 my-1">
+                            <select hx-include="[name='dancer_genres'], [name='dancer_srch'], [name='age_range']"
+                                    hx-trigger="change"
+                                    hx-target="#dcc_dancers_list_wrapper"
+                                    hx-get="{% url 'core:c_dancers' %}?page=1"
+                                    class="form-control selectpicker" name="dancer_location"
+                                    data-title="{% translate 'Select Location(s)' %}" multiple
+                                    data-container="body">
+                                <option val="1">{% translate "Location 1" %}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row my-2">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-betwee"
+                                hx-include="[name='dancer_genres'], [name='dancer_srch']"
+                                hx-trigger="change"
+                                hx-target="#dcc_dancers_list_wrapper"
+                                hx-get="{% url 'core:c_dancers' %}?page=1">
+                                <div class="form-check me-3">
+                                    <input class="form-check-input" type="checkbox" 
+                                        id="gridCheck1" name="dancer_genres" value="2">
+                                    <label class="form-check-label" for="gridCheck1">
+                                        Hip Hop
+                                    </label>
+                                </div>
+                                <div class="form-check me-3">
+                                    <input class="form-check-input" type="checkbox" 
+                                        id="gridCheck2" name="dancer_genres" value="1">
+                                    <label class="form-check-label" for="gridCheck2">
+                                        Country
+                                    </label>
+                                </div>
+                                <div class="form-check me-3">
+                                    <input class="form-check-input" type="checkbox" 
+                                        id="gridCheck3" name="dancer_genres" value="3">
+                                    <label class="form-check-label" for="gridCheck3">
+                                        RnB
+                                    </label>
+                                </div>
+                                <div class="form-check me-3">
+                                    <input class="form-check-input" type="checkbox" 
+                                        id="gridCheck4" name="dancer_genres" value="4">
+                                    <label class="form-check-label" for="gridCheck4">
+                                        Tap
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="py-2 my-2" id="dcc_dancers_list_wrapper">
+                        <div hx-get="{% url 'core:c_dancers' %}?page=1"
+                             hx-trigger="load">
+                            <div class="bg-transparent">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            {% include 'components/right_sidebar.html' %}
+        </div>
+    </div>
+</div>
+{% endblock %}

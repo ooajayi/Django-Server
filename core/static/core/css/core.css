@@ -1,0 +1,358 @@
+.dcc-msg-alert-wrapper {
+    z-index: 1;
+    position: fixed;
+    left: 0;
+    right: 0;
+    margin: 0 0.25rem;
+    opacity: 0.8;
+}
+
+#dcc_msg_alert {
+    top: 5em;
+    z-index: 1055;
+}
+
+.dcc-cursor {
+    cursor: pointer;
+}
+
+.landing-parallax {
+    /* The image used */
+    background-image: url('/static/core/images/landing/dancer-silhouette.jpg');
+    
+    /* Set a specific height */
+    min-height: 250px;
+    
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.social-links a {
+    font-size: 20px;
+    display: inline-block;
+    color: rgba(1, 41, 112, 0.5);
+    line-height: 0;
+    margin-right: 10px;
+    transition: 0.3s;
+}
+
+body {
+    font-family: "Lato", "Open Sans", sans-serif;
+    background-color: #eae9e5;
+}
+
+.bg-blue {
+    background-color: #222D44;
+}
+
+.text-blue {
+    color: #222D44;
+}
+
+.bg-champagne {
+    background-color: rgb(244, 221, 213);
+}
+
+.text-champagne {
+    color: #F4DDD5;
+}
+
+.bg-platinum {
+    background-color: #EAE9E5;
+}
+
+.text-platinum {
+    color: #EAE9E5;
+}
+
+.bg-rosegold {
+    background-color: #C48F7F;
+}
+
+.text-rosegold {
+    color: #C48F7F;
+}
+
+.bg-onyx {
+    background-color: #3d3d3d;
+}
+
+.text-onyx {
+    color: #3d3d3d;
+}
+
+.bg-cream {
+    background-color: #F5F4F2;
+}
+
+.text-cream {
+    color: #F5F4F2;
+}
+
+.card {
+    box-shadow: 0px 0 30px rgb(234, 233, 229, 0.5);
+}
+
+
+.btn-blue {
+    color: #ffffff;
+    background-color: #222D44;;
+    border-color: #222D44;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.btn-blue:hover, .btn-blue:focus{
+    background-color: transparent;
+    border-color: #222D44;
+    color: #222D44;
+}
+
+.btn-onyx {
+    color: #ffffff;
+    background-color: #3d3d3d;;
+    border-color: #3d3d3d;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.btn-onyx:hover, .btn-onyx:focus {
+    background-color: transparent;
+    border-color: #3d3d3d;
+    color: #3d3d3d;
+}
+
+.btn-outline-onyx {
+    color: #3d3d3d;
+    background-color: transparent;
+    border-color: #3d3d3d;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.btn-outline-onyx:hover, .btn-outline-onyx:focus {
+    color: #ffffff;
+    border-color: #3d3d3d;
+    background-color: #3d3d3d;
+}
+
+
+.btn-rosegold {
+    color: #000000;
+    background-color: #C48F7F;
+    border-color: #C48F7F;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.btn-rosegold:hover, .btn-rosegold:focus {
+    background-color: transparent;
+    border-color: #C48F7F;
+    color: #C48F7F;
+}
+
+.btn-outline-rosegold {
+    color: #C48F7F;
+    background-color: transparent;
+    border-color: #C48F7F;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.btn-outline-rosegold:hover, .btn-outline-rosegold:focus {
+    color: #000000;
+    border-color: #C48F7F;
+    background-color: #C48F7F;
+}
+
+
+
+@media only screen and (min-width: 769px) {
+    .dcc-hp-profile-cards .card-body {
+        /* height: 250px; */
+        height: 14rem;
+    }
+}
+@media screen and (max-width:767px) {
+    .fc-toolbar.fc-header-toolbar {
+        flex-direction:column;
+    }
+    .fc-toolbar-chunk {
+        display: table-row;
+        text-align: center;
+        padding: 5px 0;
+    }
+};
+
+
+
+/* To remove scroll 
+@media only screen and (max-device-width: 1366px) {
+    #landing-parallax {
+      background-attachment: scroll;
+    }
+}
+*/
+
+.hp-item .hp-item-overlay {
+    width: 100%;
+    height: 100%;
+}
+
+.hp-item .hp-item-overlay-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.hp-item .hp-item-br-overlay-text {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    /* transform: translate(-50%,-50%);*/
+}
+
+.hp-item .item-overlay {
+    min-height: 470px;
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+.hp-item .hp-item-overlay-text h3,
+.hp-item .hp-item-overlay-text .h3,
+.hp-item-overlay-text h3, 
+.hp-item-overlay-text .h3 {
+    font-size: calc(1.45rem + 1vw);
+    font-family: "Poppins", sans-serif;
+    line-height: 1.3;
+}
+
+.hp-item .hp-item-overlay-text h4,
+.hp-item .hp-item-overlay-text .h4,
+.hp-item-overlay-text h4, 
+.hp-item-overlay-text .h4 {
+    /* font-size: calc(1.2rem + 1vw); */
+    font-family: "Poppins", sans-serif;
+    line-height: 1.2;
+}
+
+.hp-item .hp-item-overlay-text h4 span,
+.hp-item .hp-item-overlay-text .h4 span,
+.hp-item-overlay-text h4 span, 
+.hp-item-overlay-text .h4 span {
+    color:rgb(1, 41, 112);
+    line-height: 1.5;
+}
+
+#hp_intro_bg_img {
+    content: ' ';
+    background: url('/static/core/images/landing/dancer-1.jpg');
+    height: 200px;
+    width: 200px;
+}
+
+.landing-pg-h2 {
+    font-size: calc(2.25rem + 1.5vw) !important;
+}
+
+.genre-scroll-container {
+    position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+
+.logo img {
+    max-height: 45px;
+}
+
+.footer {
+    font-size: 18px;
+    padding: 20px 10px;
+}
+
+.StripeElement {
+    box-sizing: border-box;
+
+    height: 40px;
+
+    padding: 10px 12px;
+
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background-color: white;
+
+    box-shadow: 0 1px 3px 0 #e6ebf1;
+    -webkit-transition: box-shadow 150ms ease;
+    transition: box-shadow 150ms ease;
+}
+
+.StripeElement--focus {
+    box-shadow: 0 1px 3px 0 #cfd7df;
+}
+
+.StripeElement--invalid {
+    border-color: #fa755a;
+}
+
+.StripeElement--webkit-autofill {
+    background-color: #fefde5 !important;
+}
+.hidden {
+    display: none;
+}
+
+
+#submit:hover {
+    filter: contrast(120%);
+}
+
+#submit {
+    font-feature-settings: "pnum";
+    --body-color: #f7fafc;
+    --button-color: #556cd6;
+    --accent-color: #556cd6;
+    --gray-border: #e3e8ee;
+    --link-color: #fff;
+    --font-color: #697386;
+    --body-font-family: -apple-system,BlinkMacSystemFont,sans-serif;
+    --radius: 4px;
+    --form-width: 400px;
+    -webkit-box-direction: normal;
+    word-wrap: break-word;
+    box-sizing: border-box;
+    font: inherit;
+    overflow: visible;
+    -webkit-appearance: button;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    font-family: inherit;
+    -webkit-tap-highlight-color: transparent;
+    font-size: 16px;
+    padding: 0 12px;
+    line-height: 32px;
+    outline: none;
+    text-decoration: none;
+    text-transform: none;
+    margin-right: 8px;
+    height: 36px;
+    border-radius: var(--radius);
+    color: #fff;
+    border: 0;
+    margin-top: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s ease;
+    display: block;
+    box-shadow: 0 4px 5.5px 0 rgba(0,0,0,.07);
+    width: 100%;
+    background: var(--button-color);
+}
